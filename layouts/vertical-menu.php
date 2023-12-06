@@ -114,6 +114,13 @@
                 </li>
 
                 <li>
+                    <a href="analisa.php">
+                        <i data-feather="barang"></i>
+                        <span data-key="t-dashboard">Analisa</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="grid"></i>
                         <span data-key="t-apps"><?php echo $language["Apps"]; ?></span>
