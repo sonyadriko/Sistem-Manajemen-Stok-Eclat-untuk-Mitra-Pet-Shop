@@ -127,56 +127,56 @@ function displayResult($result)
     $uniqueBarang = array_unique(array_column($transaksiData, 'kode_barang'));
 
     // Membuat tabel
-    echo '<h3>Itemset Horizontal</h3>';
+    // echo '<h3>Itemset Horizontal</h3>';
 
-    echo '<div class="table-responsive">';
-    echo '<table class="table mb-0 table-bordered">';
-    // Header tabel
-    echo '<tr><td>Transaksi</td>';
-    foreach ($uniqueBarang as $kodeBarang) {
-        echo "<td><b>$kodeBarang</b></td>";
-    }
-    echo '</tr>';
+    // echo '<div class="table-responsive">';
+    // echo '<table class="table mb-0 table-bordered">';
+    // // Header tabel
+    // echo '<tr><td>Transaksi</td>';
+    // foreach ($uniqueBarang as $kodeBarang) {
+    //     echo "<td><b>$kodeBarang</b></td>";
+    // }
+    // echo '</tr>';
 
-    // Isi tabel
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        echo "<tr><td>$idTransaksi</td>";
-        foreach ($uniqueBarang as $kodeBarang) {
-            $cellValue = in_array($kodeBarang, $barangTransaksi) ? '✔' : '';
-            echo "<td>$cellValue</td>";
-        }
-        echo '</tr>';
-    }
-    echo '</table>';
-    echo '</div>';
+    // // Isi tabel
+    // foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+    //     echo "<tr><td>$idTransaksi</td>";
+    //     foreach ($uniqueBarang as $kodeBarang) {
+    //         $cellValue = in_array($kodeBarang, $barangTransaksi) ? '✔' : '';
+    //         echo "<td>$cellValue</td>";
+    //     }
+    //     echo '</tr>';
+    // }
+    // echo '</table>';
+    // echo '</div>';
 
 
 
     // Tampilkan tabel untuk hasil Eclat
     // Membuat tabel
-    echo '</br>';
-    echo '<h3>Itemset Vertikal</h3>';
+    // echo '</br>';
+    // echo '<h3>Itemset Vertikal</h3>';
 
-    echo '<div class="table-responsive">';
-    echo '<table class="table mb-0 table-bordered">';
-    // Header tabel
-    echo '<tr><td>Barang</td>';
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        echo "<td>$idTransaksi</td>";
-    }
-    echo '</tr>';
+    // echo '<div class="table-responsive">';
+    // echo '<table class="table mb-0 table-bordered">';
+    // // Header tabel
+    // echo '<tr><td>Barang</td>';
+    // foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+    //     echo "<td>$idTransaksi</td>";
+    // }
+    // echo '</tr>';
 
-    // Isi tabel
-    foreach ($uniqueBarang as $kodeBarang) {
-        echo "<tr><td>$kodeBarang</td>";
-        foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-            $cellValue = in_array($kodeBarang, $barangTransaksi) ? '✔' : '';
-            echo "<td>$cellValue</td>";
-        }
-        echo '</tr>';
-    }
-    echo '</table>';
-    echo '</div>';
+    // // Isi tabel
+    // foreach ($uniqueBarang as $kodeBarang) {
+    //     echo "<tr><td>$kodeBarang</td>";
+    //     foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+    //         $cellValue = in_array($kodeBarang, $barangTransaksi) ? '✔' : '';
+    //         echo "<td>$cellValue</td>";
+    //     }
+    //     echo '</tr>';
+    // }
+    // echo '</table>';
+    // echo '</div>';
 
 
     // Tampilkan tabel untuk hasil Eclat
@@ -184,24 +184,33 @@ function displayResult($result)
 
     // Mengelompokkan data transaksi berdasarkan kode barang
 // Menghitung Frequent Pattern
+// Mengganti kunci dengan indeks numerik
 $minFrequentCount = 1; // Ganti dengan nilai minimum frekuensi yang diinginkan
 $frequentPatterns = [];
 
 foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-    foreach ($uniqueBarang as $kodeBarang) {
+    foreach ($barangTransaksi as $kodeBarang) {
         $count = array_count_values($barangTransaksi)[$kodeBarang] ?? 0;
 
         if ($count >= $minFrequentCount) {
-            if (!isset($frequentPatterns[$kodeBarang])) {
-                $frequentPatterns[$kodeBarang] = [
-                    'TidList' => [],
-                    'FrequentCount' => 0,
-                    'Support' => 0, // Menambah kolom Support
-                ];
+            $found = false;
+            foreach ($frequentPatterns as &$pattern) {
+                if ($pattern['Item'] == $kodeBarang) {
+                    $found = true;
+                    $pattern['TidList'][] = $idTransaksi;
+                    $pattern['FrequentCount'] += $count;
+                    break;
+                }
             }
 
-            $frequentPatterns[$kodeBarang]['TidList'][] = $idTransaksi;
-            $frequentPatterns[$kodeBarang]['FrequentCount'] += $count;
+            if (!$found) {
+                $frequentPatterns[] = [
+                    'Item' => $kodeBarang,
+                    'TidList' => [$idTransaksi],
+                    'FrequentCount' => $count,
+                    'Support' => 0,
+                ];
+            }
         }
     }
 }
@@ -212,25 +221,32 @@ foreach ($frequentPatterns as &$pattern) {
     $pattern['Support'] = ($pattern['FrequentCount'] / $totalTransaksi) * 100;
 }
 
+// Urutkan frequentPatterns berdasarkan Item
+usort($frequentPatterns, function ($a, $b) {
+    return strcmp($a['Item'], $b['Item']);
+});
+
 // Menampilkan Frequent Pattern dengan tambahan kolom Support
 echo '<h3>Frequent Pattern</h3>';
 echo '<div class="table-responsive">';
 echo '<table class="table mb-0" border="2">';
 echo '<tr><th>Item</th><th>Tid List</th><th>Frequent pattern</th><th>Support</th></tr>';
 
-foreach ($frequentPatterns as $kodeBarang => $pattern) {
+foreach ($frequentPatterns as $pattern) {
     $tidList = implode(', ', $pattern['TidList']);
     $frequentCount = $pattern['FrequentCount'];
     $support = round($pattern['Support'], 2); // Pembulatan ke 2 desimal
 
-    echo "<tr><td>$kodeBarang</td><td>$tidList</td><td>$frequentCount</td><td>$support%</td></tr>";
+    echo "<tr><td>{$pattern['Item']}</td><td>$tidList</td><td>$frequentCount</td><td>$support%</td></tr>";
 }
 
 echo '</table>';
 echo '</div>';
 
+
+
 echo '</br>';
-$minFrequentCount = 3; // Ganti dengan nilai minimum frekuensi yang diinginkan
+$minFrequentCount = 2; // Ganti dengan nilai minimum frekuensi yang diinginkan
 
 $frequent1Itemsets = [];
 
@@ -358,7 +374,7 @@ function calculateEclat($minSupport, $minConfidence)
     $barangQuery = $link->query("SELECT * FROM barang");
     $barang = [];
     while ($row = $barangQuery->fetch_assoc()) {
-        $barang[$row['kode_barang']] = $row['nama_barang'];
+        $barang[$row['nama_barang']] = $row['kode_barang'];
     }
 
     // Cek apakah ada data transaksi dan barang

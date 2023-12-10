@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <thead>
         <tr>
             <th>ID Transaksi</th>
-            <th>Kode</th>
+            <!-- <th>Kode</th> -->
             <th>Nama Barang</th>
         </tr>
     </thead>
@@ -129,20 +129,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <tbody>
         <?php
         // Sesuaikan dengan query SQL dan koneksi database Anda
-        $query = "SELECT t.id_transaksi, GROUP_CONCAT(t.kode_barang) AS kode_barang, GROUP_CONCAT(b.nama_barang) AS nama_barang
-                  FROM transaksi t 
-                  JOIN barang b ON t.kode_barang = b.kode
-                  GROUP BY t.id_transaksi";
+        // $query = "SELECT t.id_transaksi, GROUP_CONCAT(t.kode_barang) AS kode_barang, GROUP_CONCAT(b.nama_barang) AS nama_barang
+        //           FROM transaksi t 
+        //           JOIN barang b ON t.kode_barang = b.kode
+        //           GROUP BY t.id_transaksi";\
+        $query = "SELECT id_transaksi, GROUP_CONCAT(kode_barang) AS kode_barang_concatenated FROM TRANSAKSI GROUP BY id_transaksi";
 
         $result = mysqli_query($link, $query);
-
+        
         while ($row = mysqli_fetch_assoc($result)) {
             echo "<tr>";
             echo "<td>{$row['id_transaksi']}</td>";
-            echo "<td>{$row['kode_barang']}</td>";
-            echo "<td>{$row['nama_barang']}</td>";
+            echo "<td>{$row['kode_barang_concatenated']}</td>";
             echo "</tr>";
-        }
+        }        
         ?>
     </tbody>
 </table>

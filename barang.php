@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Prepare the statement for inserting data into the 'barang' table
 
-            $stmt = $link->prepare('INSERT INTO barang (kode, nama_barang) VALUES (?, ?)');
+            $stmt = $link->prepare('INSERT INTO barang (kode_barang, nama_barang) VALUES (?, ?)');
 
             // Iterate through rows and insert data into the 'barang' table
             foreach ($worksheet->getRowIterator() as $row) {
