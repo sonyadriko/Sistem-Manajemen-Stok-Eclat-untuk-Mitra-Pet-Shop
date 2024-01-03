@@ -268,6 +268,8 @@ echo '</div>';
 
 echo '</br>';
 
+
+
 echo '</br>';
 
 echo '</br>';
@@ -293,23 +295,117 @@ foreach ($allPairs as $pair) {
     }
 
     // Filter untuk transaksi dengan 2 nilai
-    if (count($transaksiMengandungKeduaBarang) == 2) {
+    if (count($transaksiMengandungKeduaBarang) >= $minSupport) {
         // Hitung support
-        $support = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
+        $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
 
         // Hitung confidence
-        $confidence = $support / count($transaksiGrouped[$transaksiMengandungKeduaBarang[0]]);
+        $supportA = count($transaksiGrouped[$transaksiMengandungKeduaBarang[0]]);
+        $confidence = ($supportA != 0) ? ($supportAB / $supportA) : 0;
 
         // Menampilkan hasil
         $transaksiStr = implode('-', $transaksiMengandungKeduaBarang);
         $itemset = "($barangA) - ($barangB)";
-        echo "<tr><td>$no</td><td>$itemset</td><td>($transaksiStr)</td><td>$support</td><td>$confidence</td></tr>";
+        echo "<tr><td>$no</td><td>$itemset</td><td>($transaksiStr)</td><td>$supportAB</td><td>$confidence</td></tr>";
         $no++;
     }
 }
 
 echo '</table>';
 echo '</div>';
+
+
+
+// Fungsi untuk menghitung support
+function calculateSupport($barangA, $barangB, $transaksiGrouped)
+{
+    $countAB = 0;
+    $countA = 0;
+
+    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+        if ($barangA !== null && $barangB !== null) {
+            if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
+                $countAB++;
+            }
+        } elseif ($barangA !== null) {
+            if (in_array($barangA, $barangTransaksi)) {
+                $countA++;
+            }
+        } elseif ($barangB !== null) {
+            if (in_array($barangB, $barangTransaksi)) {
+                $countAB++;
+            }
+        }
+    }
+
+    return $countAB;
+}
+
+
+
+echo '</br>';
+echo '<h3>Aturan Asosiasi</h3>';
+
+echo '<div class="table-responsive">';
+echo '<table id="associationRules" class="table mb-0 table-bordered">';
+echo '<thead><tr><td>No</td><td>Rule</td><td>Support</td><td>Confidence</td></tr></thead>';
+echo '<tbody>';
+
+$no = 1;
+$minSupport = 2; // Ganti dengan ambang batas support yang diinginkan
+
+// Simpan hasil aturan asosiasi dalam array
+$associationRules = array();
+
+foreach ($allPairs as $pair) {
+    $barangA = $pair['barangA'];
+    $barangB = $pair['barangB'];
+
+    // Menyimpan id transaksi yang mengandung kedua barang
+    $transaksiMengandungKeduaBarang = array();
+    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+        if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
+            $transaksiMengandungKeduaBarang[] = $idTransaksi;
+        }
+    }
+
+    // Filter untuk transaksi dengan 2 nilai
+    if (count($transaksiMengandungKeduaBarang) >= $minSupport) {
+        // Hitung support
+        $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
+
+        // Hitung confidence
+        $supportA = count($transaksiGrouped[$transaksiMengandungKeduaBarang[0]]);
+        $confidence = ($supportA != 0) ? ($supportAB / $supportA) : 0;
+
+        // Tambahkan aturan ke array
+        $associationRules[] = array(
+            'Rule' => "Jika konsumen membeli $barangA maka membeli $barangB",
+            'Support' => $supportAB,
+            'Confidence' => $confidence,
+        );
+
+        // Menampilkan hasil
+        echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidence</td></tr>";
+        $no++;
+    }
+}
+
+echo '</tbody>';
+echo '</table>';
+echo '</div>';
+?>
+<script>
+    $(document).ready(function () {
+        // Tabel untuk Aturan Asosiasi
+        $('#associationRules').DataTable();
+    });
+</script>
+
+<?php
+
+
+
 
 
 // // Menampilkan hasil
