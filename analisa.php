@@ -69,32 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     calculateEclat($minSupport, $minConfidence);
 }
 
-// Fungsi untuk menampilkan hasil Eclat
-// function displayResult($result)
-// {
-//     // Cek apakah ada data hasil Eclat
-//     if (empty($result['itemsetHorizontal'])) {
-//         echo 'No results found.';
-//         return;
-//     }
-
-//     // Tampilkan tabel untuk hasil Eclat
-//     echo '<table border="1">';
-//     echo '<tr><th>Horizontal</th><th>Itemset Vertical</th><th>Intersection</th><th>Support</th><th>Association Rule</th></tr>';
-
-//     // Iterasi melalui hasil Eclat dan tampilkan dalam tabel
-//     foreach ($result['itemsetHorizontal'] as $key => $horizontal) {
-//         $vertical = $result['itemsetVertical'][$key];
-//         $intersection = implode(', ', $result['intersection'][$key]);
-//         $support = $result['support'][$key];
-//         $associationRule = implode(', ', $result['associationRule'][$key]);
-
-//         echo "<tr><td>$horizontal</td><td>$vertical</td><td>$intersection</td><td>$support</td><td>$associationRule</td></tr>";
-//     }
-
-//     echo '</table>';
-// }
-
 function displayResult($result)
 {
     global $link; // Memastikan variabel global $link dapat digunakan di dalam fungsi
@@ -126,236 +100,231 @@ function displayResult($result)
     // Mengumpulkan semua kode barang yang unik
     $uniqueBarang = array_unique(array_column($transaksiData, 'kode_barang'));
 
-   
 
 
-    // Membuat tabel
     echo '</br>';
     echo '<h3>Itemset Vertikal</h3>';
 
     echo '<div class="table-responsive">';
     echo '<table class="table mb-0 table-bordered">';
     // Header tabel
-    echo '<tr><td>Barang</td>';
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        echo "<td>$idTransaksi</td>";
-    }
-    echo '</tr>';
+    echo '<tr><td>NO</td><td>Item</td><td>Tid List</td><td>Frequent pattern</td><td>Support</td></tr>';
+
+    $no = 1;
 
     // Isi tabel
     foreach ($uniqueBarang as $kodeBarang) {
-        echo "<tr><td>$kodeBarang</td>";
+        $tidList = array();
+        $frequentPattern = 0;
+
         foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-            $cellValue = in_array($kodeBarang, $barangTransaksi) ? '✔' : '';
-            echo "<td>$cellValue</td>";
+            if (in_array($kodeBarang, $barangTransaksi)) {
+                $tidList[] = $idTransaksi;
+                $frequentPattern++;
+            }
         }
-        echo '</tr>';
+
+        $support = $frequentPattern / count($transaksiGrouped);
+
+        echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support</td></tr>";
+        $no++;
     }
+
     echo '</table>';
     echo '</div>';
 
-
-    // Tampilkan tabel untuk hasil Eclat
     echo '</br>';
 
-    // Mengelompokkan data transaksi berdasarkan kode barang
-// Menghitung Frequent Pattern
-// Mengganti kunci dengan indeks numerik
-$minFrequentCount = 1; // Ganti dengan nilai minimum frekuensi yang diinginkan
-$frequentPatterns = [];
+        // Mengelompokkan data transaksi berdasarkan kode barang
+    // Menghitung Frequent Pattern
+    // Mengganti kunci dengan indeks numerik
+    $minFrequentCount = 1; // Ganti dengan nilai minimum frekuensi yang diinginkan
+    $frequentPatterns = [];
 
-foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-    foreach ($barangTransaksi as $kodeBarang) {
-        $count = array_count_values($barangTransaksi)[$kodeBarang] ?? 0;
+    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+        foreach ($barangTransaksi as $kodeBarang) {
+            $count = array_count_values($barangTransaksi)[$kodeBarang] ?? 0;
 
-        if ($count >= $minFrequentCount) {
-            $found = false;
-            foreach ($frequentPatterns as &$pattern) {
-                if ($pattern['Item'] == $kodeBarang) {
-                    $found = true;
-                    $pattern['TidList'][] = $idTransaksi;
-                    $pattern['FrequentCount'] += $count;
-                    break;
+            if ($count >= $minFrequentCount) {
+                $found = false;
+                foreach ($frequentPatterns as &$pattern) {
+                    if ($pattern['Item'] == $kodeBarang) {
+                        $found = true;
+                        $pattern['TidList'][] = $idTransaksi;
+                        $pattern['FrequentCount'] += $count;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $frequentPatterns[] = [
+                        'Item' => $kodeBarang,
+                        'TidList' => [$idTransaksi],
+                        'FrequentCount' => $count,
+                        'Support' => 0,
+                    ];
                 }
             }
+        }
+    }
 
-            if (!$found) {
-                $frequentPatterns[] = [
-                    'Item' => $kodeBarang,
-                    'TidList' => [$idTransaksi],
-                    'FrequentCount' => $count,
-                    'Support' => 0,
-                ];
+    // Menghitung dan menyimpan Support untuk setiap pattern
+    $totalTransaksi = count($transaksiGrouped);
+    foreach ($frequentPatterns as &$pattern) {
+        $pattern['Support'] = ($pattern['FrequentCount'] / $totalTransaksi) * 100;
+    }
+
+    // Urutkan frequentPatterns berdasarkan Item
+    usort($frequentPatterns, function ($a, $b) {
+        return strcmp($a['Item'], $b['Item']);
+    });
+
+    // $sql = "SELECT barang, transaksi FROM your_table_name"; // Replace with your actual table name
+    // $result = $koneksi->query($sql);
+    $result = $link->query("SELECT * FROM transaksi");
+    $transactions = array();
+
+    while ($row = $result->fetch_assoc()) {
+        $idTransaksi = $row['id_transaksi'];
+        $kodeBarang = $row['kode_barang'];
+
+        // Menambahkan barang ke transaksi
+        if (!isset($transactions[$idTransaksi])) {
+            $transactions[$idTransaksi] = array();
+        }
+
+        $transactions[$idTransaksi][] = $kodeBarang;
+    }
+
+    echo '</br>';
+    echo '<h3>Penyilangan Barang</h3>';
+
+    echo '<div class="table-responsive">';
+    echo '<table class="table mb-0 table-bordered">';
+    echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td></tr>';
+
+    $no = 1;
+
+    // Menghasilkan semua pasangan barang
+    $allPairs = array();
+    $uniqueBarangCount = count($uniqueBarang);
+
+    foreach ($uniqueBarang as $i => $barangA) {
+        for ($j = $i + 1; $j < $uniqueBarangCount; $j++) {
+            // Check if array keys exist before accessing
+            if (isset($uniqueBarang[$i], $uniqueBarang[$j])) {
+                $barangB = $uniqueBarang[$j];
+                $allPairs[] = array('barangA' => $barangA, 'barangB' => $barangB);
             }
         }
     }
-}
 
-// Menghitung dan menyimpan Support untuk setiap pattern
-$totalTransaksi = count($transaksiGrouped);
-foreach ($frequentPatterns as &$pattern) {
-    $pattern['Support'] = ($pattern['FrequentCount'] / $totalTransaksi) * 100;
-}
+    foreach ($allPairs as $pair) {
+        $barangA = $pair['barangA'];
+        $barangB = $pair['barangB'];
 
-// Urutkan frequentPatterns berdasarkan Item
-usort($frequentPatterns, function ($a, $b) {
-    return strcmp($a['Item'], $b['Item']);
-});
-
-// $sql = "SELECT barang, transaksi FROM your_table_name"; // Replace with your actual table name
-// $result = $koneksi->query($sql);
-$result = $link->query("SELECT * FROM transaksi");
-$transactions = array();
-
-while ($row = $result->fetch_assoc()) {
-    $idTransaksi = $row['id_transaksi'];
-    $kodeBarang = $row['kode_barang'];
-
-    // Menambahkan barang ke transaksi
-    if (!isset($transactions[$idTransaksi])) {
-        $transactions[$idTransaksi] = array();
-    }
-
-    $transactions[$idTransaksi][] = $kodeBarang;
-}
-
-
-
-echo '</br>';
-echo '<h3>Penyilangan Barang</h3>';
-
-echo '<div class="table-responsive">';
-echo '<table class="table mb-0 table-bordered">';
-echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td></tr>';
-
-$no = 1;
-
-// Menghasilkan semua pasangan barang
-$allPairs = array();
-$uniqueBarangCount = count($uniqueBarang);
-
-foreach ($uniqueBarang as $i => $barangA) {
-    for ($j = $i + 1; $j < $uniqueBarangCount; $j++) {
-        // Check if array keys exist before accessing
-        if (isset($uniqueBarang[$i], $uniqueBarang[$j])) {
-            $barangB = $uniqueBarang[$j];
-            $allPairs[] = array('barangA' => $barangA, 'barangB' => $barangB);
+        // Menyimpan id transaksi yang mengandung kedua barang
+        $transaksiMengandungKeduaBarang = array();
+        foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+            if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
+                $transaksiMengandungKeduaBarang[] = $idTransaksi;
+            }
         }
-    }
-}
-
-foreach ($allPairs as $pair) {
-    $barangA = $pair['barangA'];
-    $barangB = $pair['barangB'];
-
-    // Menyimpan id transaksi yang mengandung kedua barang
-    $transaksiMengandungKeduaBarang = array();
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
-            $transaksiMengandungKeduaBarang[] = $idTransaksi;
-        }
-    }
-
-    // Menampilkan hasil
-    $transaksiStr = implode('-', $transaksiMengandungKeduaBarang);
-    $pasanganBarang = "($barangA) - ($barangB)";
-    echo "<tr><td>$no</td><td>$pasanganBarang</td><td>($transaksiStr)</td></tr>";
-    $no++;
-}
-
-echo '</table>';
-echo '</div>';
-
-echo '</br>';
-
-
-
-echo '</br>';
-
-echo '</br>';
-echo '<h3>Itemset Support</h3>';
-
-echo '<div class="table-responsive">';
-echo '<table class="table mb-0 table-bordered">';
-echo '<tr><td>No</td><td>Itemset</td><td>Transaksi</td><td>Support</td><td>Confidence</td></tr>';
-
-$no = 1;
-$minSupport = 2; // Ganti dengan ambang batas support yang diinginkan
-
-foreach ($allPairs as $pair) {
-    $barangA = $pair['barangA'];
-    $barangB = $pair['barangB'];
-
-    // Menyimpan id transaksi yang mengandung kedua barang
-    $transaksiMengandungKeduaBarang = array();
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
-            $transaksiMengandungKeduaBarang[] = $idTransaksi;
-        }
-    }
-
-    // Filter untuk transaksi dengan 2 nilai
-    if (count($transaksiMengandungKeduaBarang) >= $minSupport) {
-        // Hitung support
-        $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
-
-        // Hitung confidence
-        $supportA = count($transaksiGrouped[$transaksiMengandungKeduaBarang[0]]);
-        $confidence = ($supportA != 0) ? ($supportAB / $supportA) : 0;
 
         // Menampilkan hasil
         $transaksiStr = implode('-', $transaksiMengandungKeduaBarang);
-        $itemset = "($barangA) - ($barangB)";
-        echo "<tr><td>$no</td><td>$itemset</td><td>($transaksiStr)</td><td>$supportAB</td><td>$confidence</td></tr>";
+        $pasanganBarang = "($barangA) - ($barangB)";
+        echo "<tr><td>$no</td><td>$pasanganBarang</td><td>($transaksiStr)</td></tr>";
         $no++;
     }
-}
 
-echo '</table>';
-echo '</div>';
+    echo '</table>';
+    echo '</div>';
 
+    echo '</br>';
+
+
+
+    echo '</br>';
+
+    echo '<table class="table mb-0 table-bordered">';
+    echo '<tr><td>No</td><td>Itemset</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
+
+    $no = 1;
+    $minSupport = 2; // Ganti dengan ambang batas support yang diinginkan
+
+    foreach ($allPairs as $pair) {
+        $barangA = $pair['barangA'];
+        $barangB = $pair['barangB'];
+
+        // Menyimpan id transaksi yang mengandung kedua barang
+        $transaksiMengandungKeduaBarang = array();
+        foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+            if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
+                $transaksiMengandungKeduaBarang[] = $idTransaksi;
+            }
+        }
+
+        // Filter untuk transaksi dengan 2 nilai
+        if (count($transaksiMengandungKeduaBarang) >= $minSupport) {
+            // Hitung support
+            $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
+
+            // Menampilkan hasil
+            $transaksiStr = implode('-', $transaksiMengandungKeduaBarang);
+            $itemset = "($barangA) - ($barangB)";
+            $jumlahTransaksi = count($transaksiMengandungKeduaBarang);
+
+            echo "<tr><td>$no</td><td>$itemset</td><td>$transaksiStr</td><td>$jumlahTransaksi</td><td>$supportAB</td></tr>";
+            $no++;
+        }
+    }
+    
+    echo '</table>';
 
 
 // Fungsi untuk menghitung support
-function calculateSupport($barangA, $barangB, $transaksiGrouped)
-{
-    $countAB = 0;
-    $countA = 0;
+    function calculateSupport($barangA, $barangB, $transaksiGrouped)
+    {
+        $countAB = 0;
+        $countA = 0;
 
-    foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
-        if ($barangA !== null && $barangB !== null) {
-            if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
-                $countAB++;
-            }
-        } elseif ($barangA !== null) {
-            if (in_array($barangA, $barangTransaksi)) {
-                $countA++;
-            }
-        } elseif ($barangB !== null) {
-            if (in_array($barangB, $barangTransaksi)) {
-                $countAB++;
+        foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
+            if ($barangA !== null && $barangB !== null) {
+                if (in_array($barangA, $barangTransaksi) && in_array($barangB, $barangTransaksi)) {
+                    $countAB++;
+                }
+            } elseif ($barangA !== null) {
+                if (in_array($barangA, $barangTransaksi)) {
+                    $countA++;
+                }
+            } elseif ($barangB !== null) {
+                if (in_array($barangB, $barangTransaksi)) {
+                    $countAB++;
+                }
             }
         }
+
+        return $countAB;
     }
 
-    return $countAB;
-}
 
+    echo '</br>';
+    echo '<h3>Aturan Asosiasi</h3>';
 
+    echo '<div class="table-responsive">';
+    echo '<table id="associationRules" class="table mb-0 table-bordered">';
+    echo '<thead><tr><td>No</td><td>Rule</td><td>Support</td><td>Confidence</td></tr></thead>';
+    echo '<tbody>';
 
-echo '</br>';
-echo '<h3>Aturan Asosiasi</h3>';
+    $no = 1;
+    // $minSupport = 2; // Ganti dengan ambang batas support yang diinginkan
 
-echo '<div class="table-responsive">';
-echo '<table id="associationRules" class="table mb-0 table-bordered">';
-echo '<thead><tr><td>No</td><td>Rule</td><td>Support</td><td>Confidence</td></tr></thead>';
-echo '<tbody>';
+    // Simpan hasil aturan asosiasi dalam array
+    $associationRulesAtoB = array();
+    $associationRulesBtoA = array();
 
-$no = 1;
-$minSupport = 2; // Ganti dengan ambang batas support yang diinginkan
-
-// Simpan hasil aturan asosiasi dalam array
-$associationRules = array();
+   // ...
 
 foreach ($allPairs as $pair) {
     $barangA = $pair['barangA'];
@@ -374,157 +343,47 @@ foreach ($allPairs as $pair) {
         // Hitung support
         $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
 
+        // Hitung frequent pattern untuk setiap barang
+        $frequentPatternA = count(array_filter($transaksiGrouped, function ($transaksi) use ($barangA) {
+            return in_array($barangA, $transaksi);
+        }));
+
+        $frequentPatternB = count(array_filter($transaksiGrouped, function ($transaksi) use ($barangB) {
+            return in_array($barangB, $transaksi);
+        }));
+
         // Hitung confidence
-        $supportA = count($transaksiGrouped[$transaksiMengandungKeduaBarang[0]]);
-        $confidence = ($supportA != 0) ? ($supportAB / $supportA) : 0;
+        $confidenceAtoB = ($frequentPatternA != 0) ? ($supportAB / $frequentPatternA) : 0;
+        $confidenceBtoA = ($frequentPatternB != 0) ? ($supportAB / $frequentPatternB) : 0;
 
         // Tambahkan aturan ke array
-        $associationRules[] = array(
+        $associationRulesAtoB[] = array(
             'Rule' => "Jika konsumen membeli $barangA maka membeli $barangB",
             'Support' => $supportAB,
-            'Confidence' => $confidence,
+            'Confidence' => $confidenceAtoB,
+        );
+
+        $associationRulesBtoA[] = array(
+            'Rule' => "Jika konsumen membeli $barangB maka membeli $barangA",
+            'Support' => $supportAB,
+            'Confidence' => $confidenceBtoA,
         );
 
         // Menampilkan hasil
-        echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidence</td></tr>";
+        echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidenceAtoB</td></tr>";
+        echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA</td></tr>";
+
         $no++;
     }
 }
 
-echo '</tbody>';
-echo '</table>';
-echo '</div>';
-?>
-<script>
-    $(document).ready(function () {
-        // Tabel untuk Aturan Asosiasi
-        $('#associationRules').DataTable();
-    });
-</script>
-
-<?php
+// ...
 
 
-
-
-
-// // Menampilkan hasil
-// echo '<h3>Asosiasi Barang</h3>';
-// echo '<div class="table-responsive">';
-// echo '<table class="table mb-0 table-bordered">';
-// echo '<tr><td>Itemset</td><td>Support</td></tr>';
-
-// foreach ($associations as $association) {
-//     $itemset = implode(', ', $association['itemset']);
-//     $support = $association['support'];
-//     echo "<tr><td>$itemset</td><td>$support</td></tr>";
-// }
-
-// echo '</table>';
-// echo '</div>';
-
-// $minFrequentCount = 2; // Ganti dengan nilai minimum frekuensi yang diinginkan
-
-// $frequent1Itemsets = [];
-
-// foreach ($frequentPatterns as $kodeBarang => $pattern) {
-//     if ($pattern['FrequentCount'] >= $minFrequentCount) {
-//         $frequent1Itemsets[$kodeBarang] = $pattern;
-//     }
-// }
-
-// Menampilkan Frequent 1-Itemsets
-// echo '<h3>frequent 1-itemsets dg minsup</h3>';
-// echo '<div class="table-responsive">';
-// echo '<table class="table mb-0" border="2">';
-// echo '<tr><th>Item</th><th>Tid List</th><th>Frequent pattern</th><th>Support</th></tr>';
-
-// foreach ($frequent1Itemsets as $kodeBarang => $pattern) {
-//     $tidList = implode(', ', $pattern['TidList']);
-//     $frequentCount = $pattern['FrequentCount'];
-//     $support = round($pattern['Support'], 2); // Pembulatan ke 2 desimal
-
-//     echo "<tr><td>$kodeBarang</td><td>$tidList</td><td>$frequentCount</td><td>$support%</td></tr>";
-// }
-
-// echo '</table>';
-// echo '</div>';
-
-echo '</br>';
-
-    // Membuat tabel
-// echo '<h3>Penyilangan Itemset</h3>';
-
-// echo '<div class="table-responsive">';
-// echo '<table class="table mb-0" border="2">';
-// // Header tabel
-// echo '<tr><td>No</td><td>Barang</td><td>Transaksi</td></tr>';
-
-// // Inisialisasi nomor urut
-// $nomorUrut = 1;
-
-// // Isi tabel
-// foreach ($result['itemsetHorizontal'] as $key => $horizontal) {
-//     $vertical = $result['itemsetVertical'][$key];
-//     $intersection = implode('-', $result['intersection'][$key]);
-
-//     if ($intersection !== '') {
-//         echo "<tr><td>$nomorUrut</td><td>($horizontal)</td><td>($intersection)</td></tr>";
-//         $nomorUrut++;
-//     }
-// }
-// echo '</table>';
-// echo '</div>';
-
-
-    // ... Lanjutkan dengan menampilkan tabel untuk Support dan Association Rule
-
-        // ... (Kode sebelumnya)
-
-    // Tampilkan tabel untuk hasil Eclat
-    echo '</br>';
-
-        // Membuat tabel
-    // echo '<h3>Itemset Support</h3>';
-
-    // echo '<div class="table-responsive">';
-    // echo '<table class="table mb-0" border="2">';
-    // // Header tabel
-    // echo '<tr><td>No</td><td>Barang</td><td>Transaksi</td><td>Support</td><td>Confidence</td></tr>';
-
-    // // Inisialisasi nomor urut
-    // $nomorUrut = 1;
-
-    // // Isi tabel
-    // foreach ($result['itemsetHorizontal'] as $key => $horizontal) {
-    //     $vertical = $result['itemsetVertical'][$key];
-    //     $intersection = implode('-', $result['intersection'][$key]);
-    //     $support = number_format($result['support'][$key], 2);
-    //     $confidence = number_format($result['associationRule'][$key][2], 2);
-
-    //     if ($intersection !== '') {
-    //         echo "<tr><td>$nomorUrut</td><td>($horizontal)</td><td>($intersection)</td><td>$support</td><td>$confidence</td></tr>";
-    //         $nomorUrut++;
-    //     }
-    // }
-    // echo '</table>';
-    // echo '</div>';
-
-
-    // Tampilkan tabel untuk hasil Eclat
-    // echo '<h3>Association Rule</h3>';
-    // echo '<table border="1">';
-    // echo '<tr><th>NO</th><th>RULE</th><th>SUPPORT</th><th>CONFIDENCE</th></tr>';
-    // for ($i = 0; $i < count($result['associationRule']); $i++) {
-    //     $rule = implode(' dan ', $result['associationRule'][$i][0]);
-    //     $support = $result['associationRule'][$i][1];
-    //     $confidence = $result['associationRule'][$i][2];
-    //     echo "<tr><td>" . ($i + 1) . "</td><td>Jika konsumen membeli $rule maka membeli</td><td>$support</td><td>$confidence</td></tr>";
-    // }
-    // echo '</table>';
-
-    // ... (Kode setelahnya)
-
+    echo '</tbody>';
+    echo '</table>';
+    echo '</div>';
+  
 
     // ...
 }
@@ -567,7 +426,7 @@ function calculateEclat($minSupport, $minConfidence)
 
 // Fungsi untuk melakukan perhitungan Eclat
 function performEclatCalculation($transaksi, $minSupport, $barang)
-{
+    {
     $result = [
         'transaksi' => $transaksi,  // Ta
         'itemsetHorizontal' => [],
@@ -628,7 +487,7 @@ function performEclatCalculation($transaksi, $minSupport, $barang)
     }
 
     return $result;
-}
+    }
 
 // Fungsi untuk menghasilkan kombinasi dari sebuah array
 function generateCombinations($items, $length)
@@ -692,3 +551,4 @@ function generateCombinations($items, $length)
 </body>
 
 </html>
+

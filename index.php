@@ -56,9 +56,9 @@
                                                 <div class="carousel-item active">
                                                     <div class="text-center p-4">
                                                         <h4 class="mt-3 lh-base fw-normal text-white"><b>Selamat </b> Datang</h4>
-                                                        <p class="text-white-50 font-size-13">Bitcoin prices fell sharply amid the global sell-off in equities. Negative news
-                                                            over the Bitcoin past week has dampened Bitcoin basics
-                                                            sentiment for bitcoin. </p>
+                                                        <p id="eclat-text" class="text-white-50 font-size-13">Eclat adalah suatu algoritma dalam analisis
+                                                            data untuk menemukan hubungan dan pola yang muncul secara bersamaan di beberapa transaksi atau kejadian. 
+                                                            Ini dapat membantu dalam mengidentifikasi asosiasi antara elemen-elemen berbeda dalam dataset. </p>
                                                         <!-- <button type="button" class="btn btn-light btn-sm">View details <i class="mdi mdi-arrow-right ms-1"></i></button> -->
                                                     </div>
                                                 </div>

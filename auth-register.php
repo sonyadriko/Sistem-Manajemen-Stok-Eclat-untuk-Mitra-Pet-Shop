@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
 
-    <title>Register | Minia - Admin & Dashboard Template</title>
+    <title>Register | Eclat</title>
     <?php include 'layouts/head.php'; ?>
     <?php include 'layouts/head-style.php'; ?>
 
@@ -125,13 +125,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="d-flex flex-column h-100">
                             <div class="mb-4 mb-md-5 text-center">
                                 <a href="index.php" class="d-block auth-logo">
-                                    <img src="assets/images/logo-sm.svg" alt="" height="28"> <span class="logo-txt">Minia</span>
+                                    <img src="assets/images/logo-sm.svg" alt="" height="28"> <span class="logo-txt">Eclat</span>
                                 </a>
                             </div>
                             <div class="auth-content my-auto">
                                 <div class="text-center">
                                     <h5 class="mb-0">Register Account</h5>
-                                    <p class="text-muted mt-2">Get your free Minia account now.</p>
+                                    <p class="text-muted mt-2">Get your free Eclat account now.</p>
                                 </div>
                                 <form class="needs-validation mt-4 pt-2" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                     <div class="mb-3 <?php echo (!empty($useremail_err)) ? 'has-error' : ''; ?>">
@@ -159,14 +159,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
                                     
                                     <div class="mb-4">
-                                        <p class="mb-0">By registering you agree to the Minia <a href="#" class="text-primary">Terms of Use</a></p>
+                                        <!-- <p class="mb-0">By registering you agree to the Eclat <a href="#" class="text-primary">Terms of Use</a></p> -->
                                     </div>
                                     <div class="mb-3">
                                         <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Register</button>
                                     </div>
                                 </form>
 
-                                <div class="mt-4 pt-2 text-center">
+                                <!-- <div class="mt-4 pt-2 text-center">
                                     <div class="signin-other-title">
                                         <h5 class="font-size-14 mb-3 text-muted fw-medium">- Sign up using -</h5>
                                     </div>
@@ -188,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </a>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> -->
 
                                 <div class="mt-5 text-center">
                                     <p class="text-muted mb-0">Already have an account ? <a href="auth-login.php" class="text-primary fw-semibold"> Login </a> </p>
@@ -197,7 +197,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="mt-4 mt-md-5 text-center">
                                 <p class="mb-0">© <script>
                                         document.write(new Date().getFullYear())
-                                    </script> Minia . Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                                    </script> Eclat. 
+                                    <!-- Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p> -->
                             </div>
                         </div>
                     </div>
@@ -205,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- end auth full page content -->
             </div>
             <!-- end col -->
-            <div class="col-xxl-9 col-lg-8 col-md-7">
+            <!-- <div class="col-xxl-9 col-lg-8 col-md-7">
                 <div class="auth-bg pt-md-5 p-4 d-flex">
                     <div class="bg-overlay bg-primary"></div>
                     <ul class="bg-bubbles">
@@ -220,7 +221,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li></li>
                         <li></li>
                     </ul>
-                    <!-- end bubble effect -->
+                    <!-- end bubble effect 
                     <div class="row justify-content-center align-items-center">
                         <div class="col-xl-7">
                             <div class="p-0 p-sm-4 px-xl-0">
@@ -230,7 +231,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
                                         <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                                     </div>
-                                    <!-- end carouselIndicators -->
+                                    <!-- end carouselIndicators 
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <div class="testi-contain text-white">
@@ -306,14 +307,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- end carousel-inner -->
+                                    <!-- end carousel-inner 
                                 </div>
-                                <!-- end review carousel -->
+                                <!-- end review carousel 
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- end col -->
         </div>
         <!-- end row -->

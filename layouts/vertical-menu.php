@@ -8,7 +8,7 @@
                         <img src="assets/images/logo-sm.svg" alt="" height="24">
                     </span>
                     <span class="logo-lg">
-                        <img src="assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">Minia</span>
+                        <img src="assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">Eclat</span>
                     </span>
                 </a>
 
@@ -17,7 +17,7 @@
                         <img src="assets/images/logo-sm.svg" alt="" height="24">
                     </span>
                     <span class="logo-lg">
-                        <img src="assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">Minia</span>
+                        <img src="assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">Eclat</span>
                     </span>
                 </a>
             </div>
@@ -99,12 +99,12 @@
                     </a>
                 </li>
                 
-                <li>
+                <!-- <li>
                     <a href="barang.php">
                         <i data-feather="barang"></i>
                         <span data-key="t-dashboard">Barang</span>
                     </a>
-                </li>
+                </li> -->
 
                 <li>
                     <a href="transaksi.php">
@@ -120,7 +120,7 @@
                     </a>
                 </li>
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="grid"></i>
                         <span data-key="t-apps"><?php echo $language["Apps"]; ?></span>
@@ -194,9 +194,9 @@
                         <li><a href="auth-email-verification.php" data-key="t-email-verification"><?php echo $language["Email_Verification"]; ?></a></li>
                         <li><a href="auth-two-step-verification.php" data-key="t-two-step-verification"><?php echo $language["Two_Step_Verification"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="file-text"></i>
                         <span data-key="t-pages"><?php echo $language["Pages"]; ?></span>
@@ -211,13 +211,13 @@
                         <li><a href="pages-404.php" data-key="t-error-404"><?php echo $language["Error_404"]; ?></a></li>
                         <li><a href="pages-500.php" data-key="t-error-500"><?php echo $language["Error_500"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
                
 
-                <li class="menu-title mt-2" data-key="t-components"><?php echo $language["Elements"]; ?></li>
+                <!-- <li class="menu-title mt-2" data-key="t-components"><?php echo $language["Elements"]; ?></li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="briefcase"></i>
                         <span data-key="t-components"><?php echo $language["Components"]; ?></span>
@@ -240,9 +240,9 @@
                         <li><a href="ui-colors.php" data-key="t-colors"><?php echo $language["Colors"]; ?></a></li>
                         <li><a href="ui-utilities.php" data-key="t-utilities"><?php echo $language["Utilities"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="gift"></i>
                         <span data-key="t-ui-elements"><?php echo $language["Extended"]; ?></span>
@@ -255,9 +255,9 @@
                         <li><a href="extended-rating.php" data-key="t-rating"><?php echo $language["Rating"]; ?></a></li>
                         <li><a href="extended-notifications.php" data-key="t-notifications"><?php echo $language["Notifications"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);">
                         <i data-feather="box"></i>
                         <span class="badge rounded-pill badge-soft-danger  text-danger float-end">7</span>
@@ -272,9 +272,9 @@
                         <li><a href="form-wizard.php" data-key="t-form-wizard"><?php echo $language["Wizard"]; ?></a></li>
                         <li><a href="form-mask.php" data-key="t-form-mask"><?php echo $language["Mask"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="sliders"></i>
                         <span data-key="t-tables"><?php echo $language["Tables"]; ?></span>
@@ -285,9 +285,9 @@
                         <li><a href="tables-responsive.php" data-key="t-responsive-table"><?php echo $language["Responsive"]; ?></a></li>
                         <li><a href="tables-editable.php" data-key="t-editable-table"><?php echo $language["Editable"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="pie-chart"></i>
                         <span data-key="t-charts"><?php echo $language["Charts"]; ?></span>
@@ -299,9 +299,9 @@
                         <li><a href="charts-knob.php" data-key="t-knob-charts"><?php echo $language["Jquery_Knob"]; ?></a></li>
                         <li><a href="charts-sparkline.php" data-key="t-sparkline-charts"><?php echo $language["Sparkline"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="cpu"></i>
                         <span data-key="t-icons"><?php echo $language["Icons"]; ?></span>
@@ -312,9 +312,9 @@
                         <li><a href="icons-dripicons.php" data-key="t-dripicons"><?php echo $language["Dripicons"]; ?></a></li>
                         <li><a href="icons-fontawesome.php" data-key="t-font-awesome"><?php echo $language["Font_Awesome_5"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="map"></i>
                         <span data-key="t-maps"><?php echo $language["Maps"]; ?></span>
@@ -324,9 +324,9 @@
                         <li><a href="maps-vector.php" data-key="t-v-maps"><?php echo $language["Vector"]; ?></a></li>
                         <li><a href="maps-leaflet.php" data-key="t-l-maps"><?php echo $language["Leaflet"]; ?></a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li>
+                <!-- <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="share-2"></i>
                         <span data-key="t-multi-level"><?php echo $language["Multi_Level"]; ?></span>
@@ -341,11 +341,11 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
             </ul>
 
-            <div class="card sidebar-alert border-0 text-center mx-4 mb-0 mt-5">
+            <!-- <div class="card sidebar-alert border-0 text-center mx-4 mb-0 mt-5">
                 <div class="card-body">
                     <img src="assets/images/giftbox.png" alt="">
                     <div class="mt-4">
@@ -354,7 +354,7 @@
                         <a href="#!" class="btn btn-primary mt-2"><?php echo $language["Upgrade_Now"]; ?></a>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- Sidebar -->
     </div>

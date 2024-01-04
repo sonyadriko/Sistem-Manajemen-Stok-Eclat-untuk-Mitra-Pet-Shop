@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
 
-    <title>Login | Minia - Admin & Dashboard Template</title>
+    <title>Login | Eclat</title>
     <?php include 'layouts/head.php'; ?>
 
     <?php include 'layouts/head-style.php'; ?>
@@ -107,18 +107,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="d-flex flex-column h-100">
                             <div class="mb-4 mb-md-5 text-center">
                                 <a href="index.php" class="d-block auth-logo">
-                                    <img src="assets/images/logo-sm.svg" alt="" height="28"> <span class="logo-txt">Minia</span>
+                                    <img src="assets/images/logo-sm.svg" alt="" height="28"> <span class="logo-txt">Eclat</span>
                                 </a>
                             </div>
                             <div class="auth-content my-auto">
                                 <div class="text-center">
                                     <h5 class="mb-0">Welcome Back !</h5>
-                                    <p class="text-muted mt-2">Sign in to continue to Minia.</p>
+                                    <p class="text-muted mt-2">Sign in to continue to Eclat.</p>
                                 </div>
                                 <form class="mt-4 pt-2" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                                     <div class="mb-3 <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                                         <label class="form-label" for="username">Username</label>
-                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="Henry">
+                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" >
                                         <span class="text-danger"><?php echo $username_err; ?></span>
                                     </div>
                                     <div class="mb-3 <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
@@ -128,18 +128,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </div>
                                             <div class="flex-shrink-0">
                                                 <div class="">
-                                                    <a href="auth-recoverpw.php" class="text-muted">Forgot password?</a>
+                                                    <!-- <a href="auth-recoverpw.php" class="text-muted">Forgot password?</a> -->
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="input-group auth-pass-inputgroup">
-                                            <input type="password" class="form-control" placeholder="Enter password" name="password" value="123456" aria-label="Password" aria-describedby="password-addon">
+                                            <input type="password" class="form-control" placeholder="Enter password" name="password"  aria-label="Password" aria-describedby="password-addon">
                                             <span class="text-danger"><?php echo $password_err; ?></span>
                                             <button class="btn btn-light ms-0" type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
-                                    <div class="row mb-4">
+                                    <!-- <div class="row mb-4">
                                         <div class="col">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="remember-check">
@@ -148,14 +148,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 </label>
                                             </div>
                                         </div>
-
-                                    </div>
+                                    </div> -->
                                     <div class="mb-3">
                                         <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Log In</button>
                                     </div>
                                 </form>
 
-                                <div class="mt-4 pt-2 text-center">
+                                <!-- <div class="mt-4 pt-2 text-center">
                                     <div class="signin-other-title">
                                         <h5 class="font-size-14 mb-3 text-muted fw-medium">- Sign in with -</h5>
                                     </div>
@@ -177,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </a>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> -->
 
                                 <div class="mt-5 text-center">
                                     <p class="text-muted mb-0">Don't have an account ? <a href="auth-register.php" class="text-primary fw-semibold"> Signup now </a> </p>
@@ -186,7 +185,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="mt-4 mt-md-5 text-center">
                                 <p class="mb-0">© <script>
                                         document.write(new Date().getFullYear())
-                                    </script> Minia . Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                                    </script> Eclat. 
+                                    <!-- Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p> -->
                             </div>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- end auth full page content -->
             </div>
             <!-- end col -->
-            <div class="col-xxl-9 col-lg-8 col-md-7">
+            <!-- <div class="col-xxl-9 col-lg-8 col-md-7">
                 <div class="auth-bg pt-md-5 p-4 d-flex">
                     <div class="bg-overlay bg-primary"></div>
                     <ul class="bg-bubbles">
@@ -209,7 +209,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li></li>
                         <li></li>
                     </ul>
-                    <!-- end bubble effect -->
                     <div class="row justify-content-center align-items-center">
                         <div class="col-xl-7">
                             <div class="p-0 p-sm-4 px-xl-0">
@@ -219,7 +218,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
                                         <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                                     </div>
-                                    <!-- end carouselIndicators -->
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <div class="testi-contain text-white">
@@ -295,14 +293,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- end carousel-inner -->
                                 </div>
-                                <!-- end review carousel -->
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- end col -->
         </div>
         <!-- end row -->
