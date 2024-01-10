@@ -20,33 +20,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $worksheet = $spreadsheet->getActiveSheet();
 
+            // Prepare the statement for checking if the data already exists in the 'transaksi' table
+            $checkStmt = $link->prepare('SELECT COUNT(*) FROM transaksi WHERE id_transaksi = ? AND kode_barang = ?');
+            $checkStmt->bind_param('ss', $id_transaksi, $kode_barang);
+
             // Prepare the statement for inserting data into the 'transaksi' table
             $stmt = $link->prepare('INSERT INTO transaksi (id_transaksi, kode_barang) VALUES (?, ?)');
 
-            // Iterate through rows and insert data into the 'transaksi' table
+            // Iterate through rows and insert or skip data based on existence in the 'transaksi' table
             foreach ($worksheet->getRowIterator() as $row) {
                 $rowData = [];
                 foreach ($row->getCellIterator() as $cell) {
                     $rowData[] = $cell->getValue();
                 }
 
-                // Assuming the Excel columns are in the order of 'id_transaksi', 'kode'
+                // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
                 if (count($rowData) == 2) {
                     $id_transaksi = $rowData[0];
-                    $kode = $rowData[1];
+                    $kode_barang = $rowData[1];
 
-                    // Insert data into the 'transaksi' table
-                    if (!empty($id_transaksi) && !empty($kode)) {
-                        if ($stmt->execute([$id_transaksi, $kode])) {
-                            echo 'Sukses: Data berhasil diimport.';
+                    // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
+                    $checkStmt->execute();
+                    $checkStmt->store_result();
+                    $checkStmt->bind_result($count);
+                    $checkStmt->fetch();
+
+                    if ($count == 0) {
+                        // Data doesn't exist, proceed with the insertion
+                        if (!empty($id_transaksi) && !empty($kode_barang)) {
+                            if ($stmt->execute([$id_transaksi, $kode_barang])) {
+                                echo 'Sukses: Data berhasil diimport.';
+                            } else {
+                                echo 'Error: Gagal menyimpan data.';
+                            }
                         } else {
-                            echo 'Error: Gagal menyimpan data.';
+                            echo 'Error: id_transaksi or kode_barang is empty.';
                         }
                     } else {
-                        echo 'Error: id_transaksi or Kode is empty.';
+                        // Data already exists, you may choose to skip or handle it differently
+                        echo "Data with id_transaksi $id_transaksi and kode_barang $kode_barang already exists. Skipping...\n";
                     }
                 }
             }
+
+            // Close the statements
+            $stmt->close();
+            $checkStmt->close();
+
             echo 'Import successful!';
         } else {
             echo 'Error uploading the file.';
@@ -55,10 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
+
+
+
 ?>
 
 <head>
-    <title><?php echo $language["Dashboard"]; ?> | Minia - Admin & Dashboard Template</title>
+    <title>Transaksi</title>
 
     <?php include 'layouts/head.php'; ?>
 
@@ -93,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">DataTables</h4>
+                    <h4 class="mb-sm-0 font-size-18">Transaksi</h4>
                 </div>
             </div>
         </div>
@@ -109,11 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Default Datatable</h4>
-                        <p class="card-title-desc">DataTables has most features enabled by
+                        <h4 class="card-title">Data Transaksi</h4>
+                        <!-- <p class="card-title-desc">DataTables has most features enabled by
                             default, so all you need to do to use it with your own tables is to call
                             the construction function: <code>$().DataTable();</code>.
-                        </p>
+                        </p> -->
                     </div>
                     <div class="card-body">
 
