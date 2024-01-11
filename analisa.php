@@ -487,14 +487,15 @@ function displayResult($result)
 
         // Check if the support is greater than or equal to the minimum support
         if ($support >= $minSupport) {
-            echo "<tr><td>$no</td><td>($barangA) - ($barangB)</td><td>(" . implode('-', $transaksiMengandungKeduaBarang) . ")</td><td>$frequentPattern</td><td>$support</td></tr>";
+            echo "<tr><td>$no</td><td>($barangA) - ($barangB)</td><td>(" . implode('-', $transaksiMengandungKeduaBarang) . ")</td><td>$frequentPattern </td><td>$support</td></tr>";
             $no++;
 
             // Store the data in a structured array
             $frequent2ItemsetsData[] = array(
                 'barangA' => $barangA,
                 'barangB' => $barangB,
-                'transaksi' => $transaksiMengandungKeduaBarang
+                'transaksi' => $transaksiMengandungKeduaBarang,
+                'frequentPattern' => $frequentPattern 
             );
         }
     }
@@ -850,11 +851,30 @@ function displayResult($result)
             }
         }
 
+        
+
         $frequentPattern = count($transaksiMengandungKeduaBarang);
         $support = $frequentPattern / count($transaksiGrouped);
 
         // Filter untuk transaksi dengan 2 nilai
         if ($support >= $minSupport) {
+
+            // foreach ($frequent2ItemsetsData as $itemset) {
+            //     $barangA = $itemset['barangA'];
+            //     $barangB = $itemset['barangB'];
+            //     $transaksi = $itemset['transaksi'];
+            //     $frequent2itemminsup = $itemset['frequentPattern'];
+    
+            //     // echo $frequent2itemminsup . "<br>";
+            //     // frequentPattern
+            //     // Output frequent pattern information
+            //     // echo "pasangan: ($barangA) - ($barangB)\n";
+            //     // echo "Transactions: (" . implode('-', $transaksi) . ")\n";
+            //     // echo "frequentPattern: $frequent2itemminsup\n";
+            //     // echo "\n";
+            // }
+    
+            $frequentPatternAB = count($transaksiMengandungKeduaBarang);
             // Hitung support
             $supportAB = count($transaksiMengandungKeduaBarang) / count($transaksiGrouped);
 
@@ -866,10 +886,12 @@ function displayResult($result)
             $frequentPatternB = count(array_filter($transaksiGrouped, function ($transaksi) use ($barangB) {
                 return in_array($barangB, $transaksi);
             }));
-
+            // echo $frequent2itemminsup;
+            // echo $frequentPatternAB;
             // Hitung confidence
-            $confidenceAtoB = ($frequentPatternA != 0) ? ($supportAB / $frequentPatternA) : 0;
-            $confidenceBtoA = ($frequentPatternB != 0) ? ($supportAB / $frequentPatternB) : 0;
+            $confidenceAtoB = ($frequentPatternA != 0) ? ($frequentPatternAB / $frequentPatternA) : 0;
+            $confidenceBtoA = ($frequentPatternB != 0) ? ($frequentPatternAB / $frequentPatternB) : 0;
+            // echo $frequentPatternB . "<br>";
 
             // Tambahkan aturan ke array
             $associationRulesAtoB[] = array(
@@ -921,17 +943,27 @@ function displayResult($result)
 
         $frequentPattern = count($transaksiMengandungTigaBarang);
         $support = $frequentPattern / count($transaksiGrouped);
-        
+
+       
     
         // Filter untuk transaksi dengan 3 nilai
         if ($support >= $minSupport) {
             // Hitung support
+
+            $frequentPatternABC = count($transaksiMengandungTigaBarang);
+
+
             $supportABC = count($transaksiMengandungTigaBarang) / count($transaksiGrouped);
-    
+            // $whre  = array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangB], $groupedResults[$barangC]);
+            // echo count($whre);
             // Hitung Confidence untuk setiap kombinasi
-            $confidenceAB = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangB])) / count($transaksiGrouped);
-            $confidenceBC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangB], $groupedResults[$barangC])) / count($transaksiGrouped);
-            $confidenceAC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangC])) / count($transaksiGrouped);
+            $confidenceAB = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangB]));
+            $confidenceBC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangB], $groupedResults[$barangC]));
+            $confidenceAC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangC]));
+
+            $hconfidenceAB = $confidenceAB/$frequentPatternABC;
+            $hconfidenceBC = $confidenceBC/$frequentPatternABC;
+            $hconfidenceAC = $confidenceAC/$frequentPatternABC;
     
             // Menampilkan hasil
             $transaksiStr = implode('-', $transaksiMengandungTigaBarang);
@@ -939,13 +971,13 @@ function displayResult($result)
             $itemsetBC = "($barangB) - ($barangC)";
             $itemsetAC = "($barangA) - ($barangC)";
             
-            echo "<tr><td>$no</td><td>$itemsetAB -> $barangC</td><td>$supportABC</td><td>$confidenceAB</td></tr>";
+            echo "<tr><td>$no</td><td>$itemsetAB -> $barangC</td><td>$supportABC</td><td>$hconfidenceAB</td></tr>";
             $no++;
             
-            echo "<tr><td>$no</td><td>$itemsetBC -> $barangA</td><td>$supportABC</td><td>$confidenceBC</td></tr>";
+            echo "<tr><td>$no</td><td>$itemsetBC -> $barangA</td><td>$supportABC</td><td>$hconfidenceBC</td></tr>";
             $no++;
             
-            echo "<tr><td>$no</td><td>$itemsetAC -> $barangB</td><td>$supportABC</td><td>$confidenceAC</td></tr>";
+            echo "<tr><td>$no</td><td>$itemsetAC -> $barangB</td><td>$supportABC</td><td>$hconfidenceAC</td></tr>";
             $no++;
         }
     }
