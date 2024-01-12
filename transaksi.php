@@ -7,6 +7,77 @@ require 'vendor/autoload.php'; // Menggunakan Composer untuk mengelola dependens
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     if (isset($_POST['import'])) {
+//         // Process the uploaded Excel file for import
+//         if (isset($_FILES['excelFile']) && $_FILES['excelFile']['error'] == UPLOAD_ERR_OK) {
+//             $excelFile = $_FILES['excelFile']['tmp_name'];
+
+//             // Load the Excel file with allowOnly setting
+//             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+//             $reader->setReadDataOnly(true);
+//             $spreadsheet = $reader->load($excelFile);
+
+//             $worksheet = $spreadsheet->getActiveSheet();
+
+//             // Prepare the statement for checking if the data already exists in the 'transaksi' table
+//             $checkStmt = $link->prepare('SELECT COUNT(*) FROM transaksi WHERE id_transaksi = ? AND kode_barang = ?');
+//             $checkStmt->bind_param('ss', $id_transaksi, $kode_barang);
+
+//             // Prepare the statement for inserting data into the 'transaksi' table
+//             $stmt = $link->prepare('INSERT INTO transaksi (id_transaksi, kode_barang) VALUES (?, ?)');
+
+//             // Iterate through rows and insert or skip data based on existence in the 'transaksi' table
+//             foreach ($worksheet->getRowIterator() as $row) {
+//                 $rowData = [];
+//                 foreach ($row->getCellIterator() as $cell) {
+//                     $rowData[] = $cell->getValue();
+//                 }
+
+//                 // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
+//                 if (count($rowData) == 2) {
+//                     $id_transaksi = $rowData[0];
+//                     $kode_barang = $rowData[1];
+
+//                     // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
+//                     $checkStmt->execute();
+//                     $checkStmt->store_result();
+//                     $checkStmt->bind_result($count);
+//                     $checkStmt->fetch();
+
+//                     if ($count == 0) {
+//                         // Data doesn't exist, proceed with the insertion
+//                         if (!empty($id_transaksi) && !empty($kode_barang)) {
+//                             if ($stmt->execute([$id_transaksi, $kode_barang])) {
+//                                 echo 'Sukses: Data berhasil diimport.';
+//                             } else {
+//                                 echo 'Error: Gagal menyimpan data.';
+//                             }
+//                         } else {
+//                             echo 'Error: id_transaksi or kode_barang is empty.';
+//                         }
+//                     } else {
+//                         // Data already exists, you may choose to skip or handle it differently
+//                         echo "Data with id_transaksi $id_transaksi and kode_barang $kode_barang already exists. Skipping...\n";
+//                     }
+//                 }
+//             }
+
+//             // Close the statements
+//             $stmt->close();
+//             $checkStmt->close();
+
+//             echo 'Import successful!';
+//         } else {
+//             echo 'Error uploading the file.';
+//         }
+//     }
+// }
+
+
+$importSuccess = false;
+$duplicateDataEncountered = false;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['import'])) {
         // Process the uploaded Excel file for import
@@ -49,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Data doesn't exist, proceed with the insertion
                         if (!empty($id_transaksi) && !empty($kode_barang)) {
                             if ($stmt->execute([$id_transaksi, $kode_barang])) {
-                                echo 'Sukses: Data berhasil diimport.';
+                                $importSuccess = true;
                             } else {
                                 echo 'Error: Gagal menyimpan data.';
                             }
@@ -58,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     } else {
                         // Data already exists, you may choose to skip or handle it differently
-                        echo "Data with id_transaksi $id_transaksi and kode_barang $kode_barang already exists. Skipping...\n";
+                        $duplicateDataEncountered = true;
                     }
                 }
             }
@@ -66,14 +137,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Close the statements
             $stmt->close();
             $checkStmt->close();
+            
+            if ($importSuccess) {
+                echo 'Import successful!';
+            }
 
-            echo 'Import successful!';
+            if ($duplicateDataEncountered) {
+                echo "Data with id_transaksi $id_transaksi and kode_barang $kode_barang already exists. Skipping...\n";
+            }
         } else {
             echo 'Error uploading the file.';
         }
     }
 }
-
 
 
 
@@ -133,10 +209,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Data Transaksi</h4>
-                        <!-- <p class="card-title-desc">DataTables has most features enabled by
-                            default, so all you need to do to use it with your own tables is to call
-                            the construction function: <code>$().DataTable();</code>.
-                        </p> -->
                     </div>
                     <div class="card-body">
 
@@ -146,16 +218,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <th>ID Transaksi</th>
             <!-- <th>Kode</th> -->
             <th>Nama Barang</th>
+            <th>Action</th>
         </tr>
     </thead>
 
     <tbody>
         <?php
-        // Sesuaikan dengan query SQL dan koneksi database Anda
-        // $query = "SELECT t.id_transaksi, GROUP_CONCAT(t.kode_barang) AS kode_barang, GROUP_CONCAT(b.nama_barang) AS nama_barang
-        //           FROM transaksi t 
-        //           JOIN barang b ON t.kode_barang = b.kode
-        //           GROUP BY t.id_transaksi";\
         $query = "SELECT id_transaksi, GROUP_CONCAT(kode_barang) AS kode_barang_concatenated FROM TRANSAKSI GROUP BY id_transaksi";
 
         $result = mysqli_query($link, $query);
@@ -164,6 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<tr>";
             echo "<td>{$row['id_transaksi']}</td>";
             echo "<td>{$row['kode_barang_concatenated']}</td>";
+            echo "<td><button class='btn btn-danger' onclick='deleteData(\"{$row['id_transaksi']}\")'>Delete</button></td>"; // Add the delete button
             echo "</tr>";
         }        
         ?>
@@ -221,6 +290,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- App js -->
 <script src="assets/js/app.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    <?php
+    if ($importSuccess) {
+        echo 'Swal.fire("Success", "Data berhasil diimport.", "success");';
+    }
+
+    if ($duplicateDataEncountered) {
+        echo 'Swal.fire("Warning", "Data with the same id_transaksi and kode_barang already exists. Skipping...", "warning");';
+    }
+    ?>
+</script>
+<script>
+    function deleteData(id_transaksi) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // You can use AJAX to send a request to the server for deleting the data
+                // Here's a basic example, assuming you have a separate PHP file for handling deletions
+
+                // Create a new FormData object and append the id_transaksi to it
+                var formData = new FormData();
+                formData.append("id_transaksi", id_transaksi);
+
+                // Send an AJAX request to the server to handle the deletion
+                fetch("delete_data.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Handle the response from the server
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: data,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload(); // Reload the page after the user clicks "OK"
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire('Error!', 'An error occurred while deleting data.', 'error');
+                });
+            }
+        });
+    }
+</script>
+<!-- <script>
+    function deleteData(id_transaksi) {
+        if (confirm("Are you sure you want to delete this data?")) {
+            // You can use AJAX to send a request to the server for deleting the data
+            // Here's a basic example, assuming you have a separate PHP file for handling deletions
+
+            // Create a new FormData object and append the id_transaksi to it
+            var formData = new FormData();
+            formData.append("id_transaksi", id_transaksi);
+
+            // Send an AJAX request to the server to handle the deletion
+            fetch("delete_data.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Handle the response from the server
+                alert(data); // You may want to update the UI or take other actions based on the server response
+                location.reload(); // Reload the page to reflect the changes
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    }
+</script> -->
 </body>
 
 </html>
