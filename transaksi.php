@@ -105,27 +105,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $link->prepare('INSERT INTO transaksi (id_transaksi, kode_barang) VALUES (?, ?)');
 
             // Iterate through rows and insert or skip data based on existence in the 'transaksi' table
+            // foreach ($worksheet->getRowIterator() as $row) {
+            //     $rowData = [];
+            //     foreach ($row->getCellIterator() as $cell) {
+            //         $rowData[] = $cell->getValue();
+            //     }
+
+            //     // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
+            //     if (count($rowData) == 2) {
+            //         $id_transaksi = $rowData[0];
+            //         $kode_barang = $rowData[1];
+
+            //         // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
+            //         $checkStmt->execute();
+            //         $checkStmt->store_result();
+            //         $checkStmt->bind_result($count);
+            //         $checkStmt->fetch();
+
+            //         if ($count == 0) {
+            //             // Data doesn't exist, proceed with the insertion
+            //             if (!empty($id_transaksi) && !empty($kode_barang)) {
+            //                 if ($stmt->execute([$id_transaksi, $kode_barang])) {
+            //                     $importSuccess = true;
+            //                 } else {
+            //                     echo 'Error: Gagal menyimpan data.';
+            //                 }
+            //             } else {
+            //                 echo 'Error: id_transaksi or kode_barang is empty.';
+            //             }
+            //         } else {
+            //             // Data already exists, you may choose to skip or handle it differently
+            //             $duplicateDataEncountered = true;
+            //         }
+            //     }
+            // }
             foreach ($worksheet->getRowIterator() as $row) {
                 $rowData = [];
                 foreach ($row->getCellIterator() as $cell) {
                     $rowData[] = $cell->getValue();
                 }
-
+            
                 // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
                 if (count($rowData) == 2) {
                     $id_transaksi = $rowData[0];
                     $kode_barang = $rowData[1];
-
+            
                     // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
                     $checkStmt->execute();
                     $checkStmt->store_result();
                     $checkStmt->bind_result($count);
                     $checkStmt->fetch();
-
+            
                     if ($count == 0) {
                         // Data doesn't exist, proceed with the insertion
                         if (!empty($id_transaksi) && !empty($kode_barang)) {
-                            if ($stmt->execute([$id_transaksi, $kode_barang])) {
+                            // Bind parameters before executing the statement
+                            $stmt->bind_param('ss', $id_transaksi, $kode_barang);
+                            
+                            if ($stmt->execute()) {
                                 $importSuccess = true;
                             } else {
                                 echo 'Error: Gagal menyimpan data.';
