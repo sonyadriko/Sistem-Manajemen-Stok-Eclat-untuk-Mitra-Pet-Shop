@@ -240,12 +240,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <!-- end page title -->
+        <?php
+        if($_SESSION['role'] == 'admin'){
+
+        
+        ?>
         <form action="transaksi.php" method="post" enctype="multipart/form-data">
             <label for="excelFile">Choose Excel File:</label>
             <input type="file" name="excelFile" id="excelFile" accept=".xls, .xlsx" required>
             <button type="submit" name="import">Import</button>
         </form>
-
+        <?php } ?>
+    
 
         <div class="row">
             <div class="col-12">
