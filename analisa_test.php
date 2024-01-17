@@ -1,5 +1,10 @@
 <?php
-include 'layouts/session.php';
+
+include 'connection.php';
+session_start();
+ if (!isset($_SESSION['id_user'])) {
+     header("Location: login.php");
+ }
 include 'layouts/head-main.php';
 include 'layouts/config.php';
 require 'vendor/autoload.php';

@@ -1,4 +1,10 @@
-<?php include 'layouts/session.php'; ?>
+<?php 
+include 'connection.php';
+session_start();
+ if (!isset($_SESSION['id_user'])) {
+     header("Location: login.php");
+ }
+?>
 <?php include 'layouts/head-main.php'; ?>
 <?php include 'layouts/config.php'; ?>
 
@@ -218,7 +224,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <th>ID Transaksi</th>
             <!-- <th>Kode</th> -->
             <th>Nama Barang</th>
-            <th>Action</th>
+            <?php 
+            if($_SESSION['role'] == 'admin'){ ?>
+                <th>Action</th>
+            <?php } ?>
+            
+                
         </tr>
     </thead>
 
@@ -232,7 +243,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<tr>";
             echo "<td>{$row['id_transaksi']}</td>";
             echo "<td>{$row['kode_barang_concatenated']}</td>";
+            if($_SESSION['role'] == 'admin'){ 
             echo "<td><button class='btn btn-danger' onclick='deleteData(\"{$row['id_transaksi']}\")'>Delete</button></td>"; // Add the delete button
+            }
             echo "</tr>";
         }        
         ?>

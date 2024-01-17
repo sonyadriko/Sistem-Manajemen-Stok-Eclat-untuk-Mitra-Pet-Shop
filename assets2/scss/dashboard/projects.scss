@@ -1,0 +1,23 @@
+.completion-chart {
+    height: 335px;
+    width:calc(100% - 300px)
+}
+
+.calendar-card {
+    .datepicker {
+        border: 0px;
+        padding: 0px;
+
+        table tr th,
+        table tr td {
+            width: 40px;
+            height: 40px;
+        }
+    }
+}
+
+.team-member {
+    height: 35px;
+    width: 35px;
+}
+

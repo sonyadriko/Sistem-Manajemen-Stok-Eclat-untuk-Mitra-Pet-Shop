@@ -1,4 +1,10 @@
-<?php include 'layouts/session.php'; ?>
+<?php 
+include 'connection.php';
+session_start();
+ if (!isset($_SESSION['id_user'])) {
+     header("Location: login.php");
+ }
+?>
 <?php include 'layouts/head-main.php'; ?>
 
 <head>
