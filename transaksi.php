@@ -13,73 +13,6 @@ require 'vendor/autoload.php'; // Menggunakan Composer untuk mengelola dependens
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     if (isset($_POST['import'])) {
-//         // Process the uploaded Excel file for import
-//         if (isset($_FILES['excelFile']) && $_FILES['excelFile']['error'] == UPLOAD_ERR_OK) {
-//             $excelFile = $_FILES['excelFile']['tmp_name'];
-
-//             // Load the Excel file with allowOnly setting
-//             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
-//             $reader->setReadDataOnly(true);
-//             $spreadsheet = $reader->load($excelFile);
-
-//             $worksheet = $spreadsheet->getActiveSheet();
-
-//             // Prepare the statement for checking if the data already exists in the 'transaksi' table
-//             $checkStmt = $link->prepare('SELECT COUNT(*) FROM transaksi WHERE id_transaksi = ? AND kode_barang = ?');
-//             $checkStmt->bind_param('ss', $id_transaksi, $kode_barang);
-
-//             // Prepare the statement for inserting data into the 'transaksi' table
-//             $stmt = $link->prepare('INSERT INTO transaksi (id_transaksi, kode_barang) VALUES (?, ?)');
-
-//             // Iterate through rows and insert or skip data based on existence in the 'transaksi' table
-//             foreach ($worksheet->getRowIterator() as $row) {
-//                 $rowData = [];
-//                 foreach ($row->getCellIterator() as $cell) {
-//                     $rowData[] = $cell->getValue();
-//                 }
-
-//                 // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
-//                 if (count($rowData) == 2) {
-//                     $id_transaksi = $rowData[0];
-//                     $kode_barang = $rowData[1];
-
-//                     // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
-//                     $checkStmt->execute();
-//                     $checkStmt->store_result();
-//                     $checkStmt->bind_result($count);
-//                     $checkStmt->fetch();
-
-//                     if ($count == 0) {
-//                         // Data doesn't exist, proceed with the insertion
-//                         if (!empty($id_transaksi) && !empty($kode_barang)) {
-//                             if ($stmt->execute([$id_transaksi, $kode_barang])) {
-//                                 echo 'Sukses: Data berhasil diimport.';
-//                             } else {
-//                                 echo 'Error: Gagal menyimpan data.';
-//                             }
-//                         } else {
-//                             echo 'Error: id_transaksi or kode_barang is empty.';
-//                         }
-//                     } else {
-//                         // Data already exists, you may choose to skip or handle it differently
-//                         echo "Data with id_transaksi $id_transaksi and kode_barang $kode_barang already exists. Skipping...\n";
-//                     }
-//                 }
-//             }
-
-//             // Close the statements
-//             $stmt->close();
-//             $checkStmt->close();
-
-//             echo 'Import successful!';
-//         } else {
-//             echo 'Error uploading the file.';
-//         }
-//     }
-// }
-
 
 $importSuccess = false;
 $duplicateDataEncountered = false;
@@ -104,41 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Prepare the statement for inserting data into the 'transaksi' table
             $stmt = $link->prepare('INSERT INTO transaksi (id_transaksi, kode_barang) VALUES (?, ?)');
 
-            // Iterate through rows and insert or skip data based on existence in the 'transaksi' table
-            // foreach ($worksheet->getRowIterator() as $row) {
-            //     $rowData = [];
-            //     foreach ($row->getCellIterator() as $cell) {
-            //         $rowData[] = $cell->getValue();
-            //     }
-
-            //     // Assuming the Excel columns are in the order of 'id_transaksi', 'kode_barang'
-            //     if (count($rowData) == 2) {
-            //         $id_transaksi = $rowData[0];
-            //         $kode_barang = $rowData[1];
-
-            //         // Check if data with the same 'id_transaksi' and 'kode_barang' already exists
-            //         $checkStmt->execute();
-            //         $checkStmt->store_result();
-            //         $checkStmt->bind_result($count);
-            //         $checkStmt->fetch();
-
-            //         if ($count == 0) {
-            //             // Data doesn't exist, proceed with the insertion
-            //             if (!empty($id_transaksi) && !empty($kode_barang)) {
-            //                 if ($stmt->execute([$id_transaksi, $kode_barang])) {
-            //                     $importSuccess = true;
-            //                 } else {
-            //                     echo 'Error: Gagal menyimpan data.';
-            //                 }
-            //             } else {
-            //                 echo 'Error: id_transaksi or kode_barang is empty.';
-            //             }
-            //         } else {
-            //             // Data already exists, you may choose to skip or handle it differently
-            //             $duplicateDataEncountered = true;
-            //         }
-            //     }
-            // }
             foreach ($worksheet->getRowIterator() as $row) {
                 $rowData = [];
                 foreach ($row->getCellIterator() as $cell) {
@@ -168,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 echo 'Error: Gagal menyimpan data.';
                             }
                         } else {
-                            echo 'Error: id_transaksi or kode_barang is empty.';
+                            // echo 'Error: id_transaksi or kode_barang is empty.';
                         }
                     } else {
                         // Data already exists, you may choose to skip or handle it differently
