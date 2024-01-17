@@ -40,13 +40,13 @@ require 'vendor/autoload.php';
                 </div>
                 <form id="eclatForm" action="" method="POST">
                     <div class="row mb-4">
-                        <label for="support" class="col-sm-3 col-form-label">Min Support</label>
+                        <label for="support" class="col-sm-3 col-form-label">Min Support %</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control" id="support" name="support" placeholder="Enter Min Support">
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <label for="confidence" class="col-sm-3 col-form-label">Min Confidence</label>
+                        <label for="confidence" class="col-sm-3 col-form-label">Min Confidence %</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control" id="confidence" name="confidence" placeholder="Enter Min Confidence">
                         </div>
@@ -156,7 +156,7 @@ function displayResult($result)
         $support2 = $frequentPattern / count($transaksiGrouped);
         $support = $support2;
     
-        echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support%</td></tr>";
+        echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support</td></tr>";
         $no++;
     }
     
@@ -191,7 +191,7 @@ function displayResult($result)
 
         // Check if the support is greater than or equal to the minimum support
         if ($support >= $minSupport) {
-            echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support%</td></tr>";
+            echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support</td></tr>";
             $no++;
         }
     }
@@ -493,7 +493,7 @@ function displayResult($result)
 
         // Check if the support is greater than or equal to the minimum support
         if ($support >= $minSupport) {
-            echo "<tr><td>$no</td><td>($barangA) - ($barangB)</td><td>(" . implode('-', $transaksiMengandungKeduaBarang) . ")</td><td>$frequentPattern </td><td>$support%</td></tr>";
+            echo "<tr><td>$no</td><td>($barangA) - ($barangB)</td><td>(" . implode('-', $transaksiMengandungKeduaBarang) . ")</td><td>$frequentPattern </td><td>$support</td></tr>";
             $no++;
 
             // Store the data in a structured array
@@ -791,7 +791,7 @@ function displayResult($result)
             $itemset = "($barangA) - ($barangB) - ($barangC)";
             $jumlahTransaksi = count($transaksiMengandungTigaBarang);
 
-            echo "<tr><td>$no</td><td>$itemset</td><td>$transaksiStr</td><td>$jumlahTransaksi</td><td>$supportABC%</td></tr>";
+            echo "<tr><td>$no</td><td>$itemset</td><td>$transaksiStr</td><td>$jumlahTransaksi</td><td>$supportABC</td></tr>";
             $no++;
         }
     }
@@ -913,8 +913,8 @@ function displayResult($result)
             );
 
             // Menampilkan hasil
-            echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB%</td><td>$confidenceAtoB%</td></tr>";
-            echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB%</td><td>$confidenceBtoA%</td></tr>";
+            echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidenceAtoB%</td></tr>";
+            echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA%</td></tr>";
 
             $no++;
         }
@@ -977,13 +977,13 @@ function displayResult($result)
             $itemsetBC = "$barangB dan $barangC";
             $itemsetAC = "$barangA dan $barangC";
             
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAB maka membeli $barangC</td><td>$supportABC%</td><td>$hconfidenceAB%</td></tr>";
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAB maka membeli $barangC</td><td>$supportABC</td><td>$hconfidenceAB%</td></tr>";
             $no++;
             
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetBC maka membeli $barangA</td><td>$supportABC%</td><td>$hconfidenceBC%</td></tr>";
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetBC maka membeli $barangA</td><td>$supportABC</td><td>$hconfidenceBC%</td></tr>";
             $no++;
             
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAC maka membeli $barangB</td><td>$supportABC%</td><td>$hconfidenceAC%</td></tr>";
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAC maka membeli $barangB</td><td>$supportABC</td><td>$hconfidenceAC%</td></tr>";
             $no++;
         }
     }
