@@ -112,11 +112,20 @@
                         <span data-key="t-dashboard">Transaksi</span>
                     </a>
                 </li>
-
+                <?php 
+                if($_SESSION['role'] == 'admin'){
+                ?>
                 <li>
                     <a href="analisa.php">
                         <i data-feather="barang"></i>
                         <span data-key="t-dashboard">Analisa</span>
+                    </a>
+                </li>
+                <?php } ?>
+                <li>
+                    <a href="history.php">
+                        <i data-feather="barang"></i>
+                        <span data-key="t-dashboard">History</span>
                     </a>
                 </li>
 
