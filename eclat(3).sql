@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2024 at 08:02 AM
+-- Generation Time: Jan 18, 2024 at 10:08 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
 
@@ -254,6 +254,72 @@ INSERT INTO `barang` (`id_barang`, `kode_barang`, `nama_barang`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `detail_hasil`
+--
+
+CREATE TABLE `detail_hasil` (
+  `id_detail_hasil` int(11) NOT NULL,
+  `hasil_id` int(11) NOT NULL,
+  `rule` varchar(1024) NOT NULL,
+  `sup_detail` double NOT NULL,
+  `conf_detail` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `detail_hasil`
+--
+
+INSERT INTO `detail_hasil` (`id_detail_hasil`, `hasil_id`, `rule`, `sup_detail`, `conf_detail`) VALUES
+(3, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli MAXI TUNA', 0.1, 0.33333333333333),
+(4, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.33333333333333),
+(5, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
+(6, 51, 'Jika konsumen membeli LIFE CAT POUCH KITTEN TUNA maka membeli UNIV (TASTY) KITTEN', 0.1, 0.66666666666667),
+(7, 51, 'Jika konsumen membeli MAXI TUNA maka membeli PASIR CLUMPING', 0.15, 0.75),
+(8, 51, 'Jika konsumen membeli MEO PERSIAN maka membeli PASIR CLUMPING', 0.1, 0.66666666666667),
+(9, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli MEO POUCH TUNA IN JELLY', 0.1, 0.66666666666667),
+(10, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli UNIV (TASTY) KITTEN', 0.1, 0.66666666666667),
+(11, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli UNIV (TASTY) KITTEN', 0.1, 0.25),
+(12, 51, 'Jika konsumen membeli MAXI TUNA maka membeli BOLT CAT TUNA', 0.1, 0.5),
+(13, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli BOLT CAT TUNA', 0.1, 0.66666666666667),
+(14, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
+(15, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli LIFE CAT POUCH KITTEN TUNA', 0.1, 0.5),
+(16, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli MAXI TUNA', 0.15, 0.375),
+(17, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli MEO PERSIAN', 0.1, 0.25),
+(18, 51, 'Jika konsumen membeli MEO POUCH TUNA IN JELLY maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.66666666666667),
+(19, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.5),
+(20, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli PASIR CLUMPING', 0.1, 0.5),
+(21, 52, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
+(22, 52, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
+(47, 61, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
+(48, 61, 'Jika konsumen membeli MAXI TUNA maka membeli PASIR CLUMPING', 0.15, 0.75),
+(49, 61, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
+(50, 61, 'Jika konsumen membeli PASIR CLUMPING maka membeli MAXI TUNA', 0.15, 0.375);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hasil`
+--
+
+CREATE TABLE `hasil` (
+  `id_hasil` int(11) NOT NULL,
+  `min_sup` double NOT NULL,
+  `min_con` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `hasil`
+--
+
+INSERT INTO `hasil` (`id_hasil`, `min_sup`, `min_con`) VALUES
+(50, 0.1, 0.5),
+(51, 0.1, 0.5),
+(52, 0.2, 0.5),
+(61, 0.15, 0.5);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transaksi`
 --
 
@@ -368,6 +434,18 @@ ALTER TABLE `barang`
   ADD PRIMARY KEY (`id_barang`);
 
 --
+-- Indexes for table `detail_hasil`
+--
+ALTER TABLE `detail_hasil`
+  ADD PRIMARY KEY (`id_detail_hasil`);
+
+--
+-- Indexes for table `hasil`
+--
+ALTER TABLE `hasil`
+  ADD PRIMARY KEY (`id_hasil`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -382,6 +460,18 @@ ALTER TABLE `user`
 --
 ALTER TABLE `barang`
   MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=214;
+
+--
+-- AUTO_INCREMENT for table `detail_hasil`
+--
+ALTER TABLE `detail_hasil`
+  MODIFY `id_detail_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
+-- AUTO_INCREMENT for table `hasil`
+--
+ALTER TABLE `hasil`
+  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `user`
