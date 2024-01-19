@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" name="import">Import</button>
         </form>
         <?php } ?>
-    
+        <br>
 
         <div class="row">
             <div class="col-12">
@@ -193,13 +193,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </tbody>
 </table>
 
-
                     </div>
+                    
                 </div>
+
             </div> <!-- end col -->
+
         </div> <!-- end row -->
+        <button class="btn btn-danger" onclick="deleteAllData()">Delete All Data</button>
 
     </div> <!-- container-fluid -->
+    <br>
+
 </div>
 <!-- End Page-content -->
 
@@ -300,6 +305,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     }
 </script>
+<script>
+    function deleteAllData() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action will delete all data in the table. You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete all data!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // You can use AJAX to send a request to the server for deleting all data
+                // Here's a basic example, assuming you have a separate PHP file for handling deletions
+
+                // Send an AJAX request to the server to handle the deletion
+                fetch("delete_all_data.php", {
+                    method: "POST",
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Handle the response from the server
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: data,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload(); // Reload the page after the user clicks "OK"
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire('Error!', 'An error occurred while deleting all data.', 'error');
+                });
+            }
+        });
+    }
+</script>
+
 <!-- <script>
     function deleteData(id_transaksi) {
         if (confirm("Are you sure you want to delete this data?")) {
