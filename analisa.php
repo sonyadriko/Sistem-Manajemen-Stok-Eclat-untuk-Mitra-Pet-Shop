@@ -26,12 +26,12 @@
                             <input type="number" class="form-control" id="support" name="support" placeholder="Enter Min Support">
                         </div>
                     </div>
-                    <div class="row mb-4">
+                    <!-- <div class="row mb-4">
                         <label for="confidence" class="col-sm-3 col-form-label">Min Confidence %</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control" id="confidence" name="confidence" placeholder="Enter Min Confidence">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row justify-content-end">
                         <div class="col-sm-9">
                             <div>
@@ -42,9 +42,11 @@
                 </form>
                 <div id="resultTable"></div>
                 <?php
-                if (isset($_POST['support']) && isset($_POST['confidence'])) {
+                // if (isset($_POST['support']) && isset($_POST['confidence'])) {
+                if (isset($_POST['support'])) {
                     $minSupportPercentage = $_POST['support'];
-                    $minConfidencePercentage = $_POST['confidence'];
+                    // $minConfidencePercentage = $_POST['confidence'];
+                    $minConfidencePercentage = 0;
                     $maxPercentage = 100; 
                     $minSupport = ($minSupportPercentage / $maxPercentage);
                     $minConfidence = ($minConfidencePercentage / $maxPercentage);
@@ -114,12 +116,15 @@ function displayResult($result)
         }
     }
     echo '</table>';echo '</div>';echo '</br>';
-    $minFrequentCount = 1; // Ganti dengan nilai minimum frekuensi yang diinginkan
+    
+    $minFrequentCount = 1; 
+    // Ganti dengan nilai minimum frekuensi yang diinginkan
     $frequentPatterns = [];
     foreach ($transaksiGrouped as $idTransaksi => $barangTransaksi) {
         foreach ($barangTransaksi as $kodeBarang) {
             $count = array_count_values($barangTransaksi)[$kodeBarang] ?? 0;
-            if ($count >= $minFrequentCount) {
+            // if ($count >= $minFrequentCount) {
+            if ($count >= $minSupport) {
                 $found = false;
                 foreach ($frequentPatterns as &$pattern) {
                     if ($pattern['Item'] == $kodeBarang) {
@@ -157,6 +162,7 @@ function displayResult($result)
         }
         $transactions[$idTransaksi][] = $kodeBarang;
     }
+
     echo '</br>';echo '<h3>frequent 2-itemsets</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
     $no = 1;
     $frequent1Items = array();
@@ -193,7 +199,9 @@ function displayResult($result)
             $no++;
         }
     }
-    echo '</table>'; echo '</div>'; echo '</br>'; echo '</br>';echo '<h3>frequent 2-itemsets dengan minsup</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
+    echo '</table>'; echo '</div>'; 
+    echo '</br>'; echo '</br>';
+    echo '<h3>frequent 2-itemsets dengan minsup</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
     $no = 1;
     $allPairs = array();
     $uniqueBarangCount = count($uniqueBarang);
@@ -223,7 +231,8 @@ function displayResult($result)
                 'barangA' => $barangA,
                 'barangB' => $barangB,
                 'transaksi' => $transaksiMengandungKeduaBarang,
-                'frequentPattern' => $frequentPattern 
+                'frequentPattern' => $frequentPattern,
+                'support' => $support 
             );
         }
     }
@@ -396,17 +405,7 @@ function displayResult($result)
                 'Support' => $supportAB,
                 'Confidence' => $confidenceBtoA,
             );
-            // $associationRulesAtoB[] = array(
-            //     'Rule' => "Jika konsumen membeli $barangA maka membeli $barangB",
-            //     'Support' => $supportAB,
-            //     'Confidence' => $confidenceAtoB,
-            // );
-            // $associationRulesBtoA[] = array(
-            //     'Rule' => "Jika konsumen membeli $barangB maka membeli $barangA",
-            //     'Support' => $supportAB,
-            //     'Confidence' => $confidenceBtoA,
-            // );
-           
+       
             echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidenceAtoB</td></tr>";
             echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA</td></tr>";
             $no++;
@@ -414,16 +413,20 @@ function displayResult($result)
     }
     
 
-    // echo "console.log('Encoded Association Rules AtoB:', " . ($encodedAssociationRulesAtoB) . ");";
-    // echo "console.log('Encoded Association Rules BtoA:', " . json_encode($encodedAssociationRulesBtoA) . ");";
-
-    // echo "var associationRulesAtoB = " . $encodedAssociationRulesAtoB . ";";
-    // echo "var associationRulesBtoA = " . $encodedAssociationRulesBtoA . ";";
-
 
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
+
+    function getSupport($itemA, $itemB, $frequent2ItemsetsData) {
+        foreach ($frequent2ItemsetsData as $itemset) {
+            if (($itemset['barangA'] == $itemA && $itemset['barangB'] == $itemB) || ($itemset['barangA'] == $itemB && $itemset['barangB'] == $itemA)) {
+                return $itemset['support'];
+            }
+        }
+        return 0; // Return 0 jika tidak ditemukan
+    }
+    
   
     echo '</br>';
     echo '<h3>Aturan Asosiasi 3-Itemset</h3>';
@@ -444,58 +447,72 @@ function displayResult($result)
                 $transaksiMengandungTigaBarang[] = $idTransaksi;
             }
         }
-
         $frequentPattern = count($transaksiMengandungTigaBarang);
         $support = $frequentPattern / count($transaksiGrouped);
-
-       
     
         // Filter untuk transaksi dengan 3 nilai
         if ($support >= $minSupport) {
             // Hitung support
-
             $frequentPatternABC = count($transaksiMengandungTigaBarang);
-
-
             $supportABC = count($transaksiMengandungTigaBarang) / count($transaksiGrouped);
-            // $whre  = array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangB], $groupedResults[$barangC]);
-            // echo count($whre);
-            // Hitung Confidence untuk setiap kombinasi
-            $confidenceAB = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangB]));
-            $confidenceBC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangB], $groupedResults[$barangC]));
-            $confidenceAC = count(array_intersect($transaksiMengandungTigaBarang, $groupedResults[$barangA], $groupedResults[$barangC]));
-
-            $hconfidenceAB = $confidenceAB/$frequentPatternABC;
-            $hconfidenceBC = $confidenceBC/$frequentPatternABC;
-            $hconfidenceAC = $confidenceAC/$frequentPatternABC;
+            // echo $supportABC;
+    
+            // Dapatkan data support dari tabel frequent 2-itemsets
+            $supportAB = getSupport($barangA, $barangB, $frequent2ItemsetsData);
+            $supportBC = getSupport($barangB, $barangC, $frequent2ItemsetsData);
+            $supportAC = getSupport($barangA, $barangC, $frequent2ItemsetsData);
+    
+            // echo $supportAB;
+            $confidenceAB = $supportABC / $supportAB;
+            $confidenceBC = $supportABC / $supportBC;
+            $confidenceAC = $supportABC / $supportAC;
     
             // Menampilkan hasil
             $transaksiStr = implode('-', $transaksiMengandungTigaBarang);
             $itemsetAB = "$barangA dan $barangB";
             $itemsetBC = "$barangB dan $barangC";
             $itemsetAC = "$barangA dan $barangC";
-            
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAB maka membeli $barangC</td><td>$supportABC</td><td>$hconfidenceAB</td></tr>";
+    
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAB maka membeli $barangC</td><td>$supportABC</td><td>$confidenceAB</td></tr>";
             $no++;
-            
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetBC maka membeli $barangA</td><td>$supportABC</td><td>$hconfidenceBC</td></tr>";
+    
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetBC maka membeli $barangA</td><td>$supportABC</td><td>$confidenceBC</td></tr>";
             $no++;
-            
-            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAC maka membeli $barangB</td><td>$supportABC</td><td>$hconfidenceAC</td></tr>";
+    
+            echo "<tr><td>$no</td><td>Jika konsumen membeli barang $itemsetAC maka membeli $barangB</td><td>$supportABC</td><td>$confidenceAC</td></tr>";
             $no++;
+
+            $assosiasi3_1[] = array(
+                'Rule' => "Jika konsumen membeli $itemsetAB maka membeli $barangC",
+                'Support' => $supportABC,
+                'Confidence' => $confidenceAB,
+            );
+            $assosiasi3_2[] = array(
+                'Rule' => "Jika konsumen membeli $itemsetBC maka membeli $barangA",
+                'Support' => $supportABC,
+                'Confidence' => $confidenceBC,
+            );
+            $assosiasi3_3[] = array(
+                'Rule' => "Jika konsumen membeli $itemsetAC maka membeli $barangB",
+                'Support' => $supportABC,
+                'Confidence' => $confidenceAC,
+            );
         }
     }
-
-
-    // $encodedAssociationRulesAtoB = json_encode($associationRulesAtoB, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    // $encodedAssociationRulesBtoA = json_encode($associationRulesBtoA, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-  
-
-    echo '</table>';echo '</br>';echo '</br><button id="saveButton" class="btn btn-success" onclick="saveData()">Save</button>';echo '</br>';echo '</br>';
+    
+    echo '</table>';
+    echo '</br>';
+    echo '</br><button id="saveButton" class="btn btn-success" onclick="saveData()">Save</button>';
+    echo '</br>';
+    echo '</br>';
+    
 ?>
 <script>
     var encodedAssociationRulesAtoB = <?php echo  json_encode($associationRulesAtoB); ?>;
     var encodedAssociationRulesBtoA = <?php echo  json_encode($associationRulesBtoA); ?>;
+    var encodedAssosiasi3_1 = <?php echo  json_encode($assosiasi3_1); ?>;
+    var encodedAssosiasi3_2 = <?php echo  json_encode($assosiasi3_2); ?>;
+    var encodedAssosiasi3_3 = <?php echo  json_encode($assosiasi3_3); ?>;
     </script>
 <?php }
 
@@ -606,6 +623,9 @@ function displayResult($result)
     document.addEventListener("DOMContentLoaded", function () {
         var associationRulesAtoB = [];  
         var associationRulesBtoA = [];  
+        var association3_1 = [];  
+        var association3_2 = [];  
+        var association3_3 = [];  
         const saveButton = document.getElementById('saveButton');
         console.log('Save Button:', saveButton);
         if (saveButton) {
@@ -653,16 +673,18 @@ function displayResult($result)
 
             var associationRulesAtoB = encodedAssociationRulesAtoB || [];
             var associationRulesBtoA = encodedAssociationRulesBtoA || [];
+            var association3_1 = encodedAssosiasi3_1 || [];
+            var association3_2 = encodedAssosiasi3_2 || [];
+            var association3_3 = encodedAssosiasi3_3 || [];
             document.getElementById('saveButton').disabled = true;
 
-            saveDetailHasil(parsedData.last_id, associationRulesAtoB, associationRulesBtoA);
+            saveDetailHasil(parsedData.last_id, associationRulesAtoB, associationRulesBtoA, association3_1, association3_2, association3_3);
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
-
-    function saveDetailHasil(idHasil, associationRulesAtoB, associationRulesBtoA) {
+    function saveDetailHasil(idHasil, associationRulesAtoB, associationRulesBtoA, association3_1, association3_2, association3_3) {
         var detailDataArray = [];
 
         associationRulesAtoB.forEach(rule => {
@@ -676,6 +698,33 @@ function displayResult($result)
         });
 
         associationRulesBtoA.forEach(rule => {
+            var detailData = {
+                id_hasil: idHasil,
+                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                support: rule.Support,
+                confidence: rule.Confidence,
+            };
+            detailDataArray.push(detailData);
+        });
+        association3_1.forEach(rule => {
+            var detailData = {
+                id_hasil: idHasil,
+                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                support: rule.Support,
+                confidence: rule.Confidence,
+            };
+            detailDataArray.push(detailData);
+        });
+        association3_2.forEach(rule => {
+            var detailData = {
+                id_hasil: idHasil,
+                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                support: rule.Support,
+                confidence: rule.Confidence,
+            };
+            detailDataArray.push(detailData);
+        });
+        association3_3.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
                 id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'

@@ -65,7 +65,7 @@ session_start();
                                 <!-- <th>Kode</th> -->
                                 <th>Pengujian Ke</th>
                                 <th>Support</th>
-                                <th>Confidence</th>
+                                <!-- <th>Confidence</th> -->
                                 <th>Action</th>
                                 
                                     
@@ -83,8 +83,9 @@ session_start();
                                 echo "<td>{$no}</td>";
                                 echo "<td>{$row['id_hasil']}</td>";
                                 echo "<td>{$row['min_sup']}</td>";
-                                echo "<td>{$row['min_con']}</td>";
-                            echo "<td><a class='btn btn-info' href='detail_history.php?id={$row['id_hasil']}'>Detail</a></td>";
+                                // echo "<td>{$row['min_con']}</td>";
+                            echo "<td><a class='btn btn-info' href='detail_history.php?id={$row['id_hasil']}'>Detail</a>
+                            <a class='btn btn-info' href='delete_history.php?id={$row['id_hasil']}'>Hapus</a></td>";
                                 echo "</tr>";
                             $no++;
                             }  

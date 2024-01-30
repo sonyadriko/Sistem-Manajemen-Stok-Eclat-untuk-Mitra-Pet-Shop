@@ -5,11 +5,13 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $response = []; // Inisialisasi array respons
 
-if (isset($data['support']) && isset($data['confidence'])) {
+// if (isset($data['support']) && isset($data['confidence'])) {
+if (isset($data['support'])) {
     $minSupportPercentage = $data['support'];
-    $minConfidencePercentage = $data['confidence'];
+    // $minConfidencePercentage = $data['confidence'];
 
-    $sql = "INSERT INTO hasil (`min_sup`, `min_con`) VALUES ('$minSupportPercentage', '$minConfidencePercentage')";
+    // $sql = "INSERT INTO hasil (`min_sup`, `min_con`) VALUES ('$minSupportPercentage', '$minConfidencePercentage')";
+    $sql = "INSERT INTO hasil (`min_sup`) VALUES ('$minSupportPercentage')";
 
     if ($conn->query($sql) === TRUE) {
         $last_id = $conn->insert_id;
