@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2024 at 10:08 PM
+-- Generation Time: Jan 30, 2024 at 05:48 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
 
@@ -249,7 +249,22 @@ INSERT INTO `barang` (`id_barang`, `kode_barang`, `nama_barang`) VALUES
 (210, 'WKST1', 'WKS TASTY MIX CHICKEN TUNA'),
 (211, 'WKST2', 'WKS TASTY MIX CHICKEN SALMON'),
 (212, 'WKST3', 'WKS TASTY MIX SEAFOOD'),
-(213, 'WKST4', 'WKS TASTY MIX TUNA');
+(213, 'WKST4', 'WKS TASTY MIX TUNA'),
+(214, 'MEO7', 'MEO KITTEN TUNA'),
+(215, 'SMP12', 'SAMPO BEST JAMUR'),
+(216, 'STK11', 'ST KALENG BABY CHICKEN FEAST'),
+(217, 'DPS', 'DISPENSER SMALL'),
+(218, 'SCP1', 'SUPER CAT POUCH'),
+(219, 'SCP2', 'SUPER CAT POUCH TUNA'),
+(220, 'SCP3', 'SUPER CAT POUCH KITTEN TUNA'),
+(221, 'SCP4', 'SUPER CAT POUCH KITTEN TUNA WHITE FISH'),
+(222, 'SCP5', 'SUPER CAT POUCH KITTEN TUNA CHICKEN'),
+(223, 'SCP6', 'SUPER CAT POUCH KITTEN'),
+(224, 'PC', 'PROTEKTION COVER'),
+(225, 'SS5', 'SISIR GG KAYU KECIL'),
+(226, 'SS6', 'SISIR GG KAYU BESAR'),
+(227, 'PDGR3', 'PED MEAT JERKY'),
+(228, 'PDGR4', 'PED MEAT JERKY SMOKY BEEF');
 
 -- --------------------------------------------------------
 
@@ -265,36 +280,6 @@ CREATE TABLE `detail_hasil` (
   `conf_detail` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `detail_hasil`
---
-
-INSERT INTO `detail_hasil` (`id_detail_hasil`, `hasil_id`, `rule`, `sup_detail`, `conf_detail`) VALUES
-(3, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli MAXI TUNA', 0.1, 0.33333333333333),
-(4, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.33333333333333),
-(5, 51, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
-(6, 51, 'Jika konsumen membeli LIFE CAT POUCH KITTEN TUNA maka membeli UNIV (TASTY) KITTEN', 0.1, 0.66666666666667),
-(7, 51, 'Jika konsumen membeli MAXI TUNA maka membeli PASIR CLUMPING', 0.15, 0.75),
-(8, 51, 'Jika konsumen membeli MEO PERSIAN maka membeli PASIR CLUMPING', 0.1, 0.66666666666667),
-(9, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli MEO POUCH TUNA IN JELLY', 0.1, 0.66666666666667),
-(10, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli UNIV (TASTY) KITTEN', 0.1, 0.66666666666667),
-(11, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli UNIV (TASTY) KITTEN', 0.1, 0.25),
-(12, 51, 'Jika konsumen membeli MAXI TUNA maka membeli BOLT CAT TUNA', 0.1, 0.5),
-(13, 51, 'Jika konsumen membeli MEO POUCH TUNA CHICKEN maka membeli BOLT CAT TUNA', 0.1, 0.66666666666667),
-(14, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
-(15, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli LIFE CAT POUCH KITTEN TUNA', 0.1, 0.5),
-(16, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli MAXI TUNA', 0.15, 0.375),
-(17, 51, 'Jika konsumen membeli PASIR CLUMPING maka membeli MEO PERSIAN', 0.1, 0.25),
-(18, 51, 'Jika konsumen membeli MEO POUCH TUNA IN JELLY maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.66666666666667),
-(19, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli MEO POUCH TUNA CHICKEN', 0.1, 0.5),
-(20, 51, 'Jika konsumen membeli UNIV (TASTY) KITTEN maka membeli PASIR CLUMPING', 0.1, 0.5),
-(21, 52, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
-(22, 52, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
-(47, 61, 'Jika konsumen membeli BOLT CAT TUNA maka membeli PASIR CLUMPING', 0.25, 0.83333333333333),
-(48, 61, 'Jika konsumen membeli MAXI TUNA maka membeli PASIR CLUMPING', 0.15, 0.75),
-(49, 61, 'Jika konsumen membeli PASIR CLUMPING maka membeli BOLT CAT TUNA', 0.25, 0.625),
-(50, 61, 'Jika konsumen membeli PASIR CLUMPING maka membeli MAXI TUNA', 0.15, 0.375);
-
 -- --------------------------------------------------------
 
 --
@@ -304,18 +289,8 @@ INSERT INTO `detail_hasil` (`id_detail_hasil`, `hasil_id`, `rule`, `sup_detail`,
 CREATE TABLE `hasil` (
   `id_hasil` int(11) NOT NULL,
   `min_sup` double NOT NULL,
-  `min_con` double NOT NULL
+  `min_con` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `hasil`
---
-
-INSERT INTO `hasil` (`id_hasil`, `min_sup`, `min_con`) VALUES
-(50, 0.1, 0.5),
-(51, 0.1, 0.5),
-(52, 0.2, 0.5),
-(61, 0.15, 0.5);
 
 -- --------------------------------------------------------
 
@@ -459,19 +434,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=214;
+  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
 
 --
 -- AUTO_INCREMENT for table `detail_hasil`
 --
 ALTER TABLE `detail_hasil`
-  MODIFY `id_detail_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_detail_hasil` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `hasil`
 --
 ALTER TABLE `hasil`
-  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `user`
