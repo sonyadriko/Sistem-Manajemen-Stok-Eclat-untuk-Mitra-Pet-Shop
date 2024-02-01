@@ -4,64 +4,73 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login</title>
-    <!-- Core css -->
-    <link href="assets2/css/app.min.css" rel="stylesheet">
-
+	<title>Login V1</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="assetlogin/images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="assetlogin/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="assetlogin/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="assetlogin/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="assetlogin/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="assetlogin/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="assetlogin/css/util.css">
+	<link rel="stylesheet" type="text/css" href="assetlogin/css/main.css">
+<!--===============================================================================================-->
 </head>
-
 <body>
-    <div class="app">
-        <div class="container-fluid p-h-0 p-v-20 bg full-height d-flex" style="background-image: url('assets2/images/others/login-3.png')">
-            <div class="d-flex flex-column justify-content-between w-100">
-                <div class="container d-flex h-100">
-                    <div class="row align-items-center w-100">
-                        <div class="col-md-7 col-lg-5 m-h-auto">
-                            <div class="card shadow-lg">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center justify-content-between m-b-30">
-                                        <h2 class="m-b-0">Sign In</h2>
-                                    </div>
-                                    <form action="login.php" method="post" onsubmit="return validasi()">
-                                        <div class="form-group">
-                                            <label class="font-weight-semibold" for="username">Username:</label>
-                                            <div class="input-affix">
-                                                <i class="prefix-icon anticon anticon-user"></i>
-                                                <input type="text" class="form-control" id="username" name="username" placeholder="Username">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-semibold" for="password">Password:</label>
-                                            <div class="input-affix m-b-10">
-                                                <i class="prefix-icon anticon anticon-lock"></i>
-                                                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="login_input" value="1">
-                                        <div class="form-group">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <span class="font-size-13 text-muted">
-                                                    Don't have an account? 
-                                                    <a class="small" href=""> Signup</a>
-                                                </span>
-                                                <button type="submit" class="btn btn-primary" name="login_button">Sign In</button>
-                                            </div>
-                                        </div>
-                                    </form>
+	
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="assetlogin/images/img-01.png" alt="IMG">
+				</div>
 
+				<!-- <form class="login100-form validate-form"> -->
+                <form action="login.php" method="post" class="login100-form validate-form" onsubmit="return validasi()">
+					<span class="login100-form-title">
+						Login
+					</span>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="wrap-input100 validate-input" data-validate = "Username is required">
+						<input class="input100" type="text" id="username" name="username" placeholder="Username">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" name="password" id="password" placeholder="Password">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+                    <input type="hidden" name="login_input" value="1">
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn" name="login_button">
+							Login
+						</button>
+					</div>
+
+					<div class="text-center p-t-136">
+						
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
 
     <script type="text/javascript">
         function validasi() {
@@ -75,14 +84,22 @@
             }
         }
     </script>
-    <!-- Core Vendors JS -->
-    <script src="assets2/js/vendors.min.js"></script>
-
-    <!-- page js -->
-
-    <!-- Core JS -->
-    <script src="assets2/js/app.min.js"></script>
+<!--===============================================================================================-->	
+	<script src="assetlogin/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="assetlogin/vendor/bootstrap/js/popper.js"></script>
+	<script src="assetlogin/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="assetlogin/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="assetlogin/vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="assetlogin/js/main.js"></script>
 
 </body>
-
 </html>
