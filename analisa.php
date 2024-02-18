@@ -1,4 +1,12 @@
-<?php include 'connection.php'; session_start(); if (!isset($_SESSION['id_user'])) { header("Location: login.php"); } ?>
+<?php 
+    include 'connection.php'; 
+    session_start(); 
+    set_time_limit(300);
+    if (!isset($_SESSION['id_user'])) { 
+        header("Location: login.php"); 
+    }
+
+?>
 <?php include 'layouts/head-main.php'; ?> <?php include 'layouts/config.php'; ?> <?php require 'vendor/autoload.php'; ?>
 <head>
     <title>Analisa</title>

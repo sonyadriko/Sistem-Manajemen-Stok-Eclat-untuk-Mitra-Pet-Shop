@@ -344,34 +344,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     }
 </script>
-
-<!-- <script>
-    function deleteData(id_transaksi) {
-        if (confirm("Are you sure you want to delete this data?")) {
-            // You can use AJAX to send a request to the server for deleting the data
-            // Here's a basic example, assuming you have a separate PHP file for handling deletions
-
-            // Create a new FormData object and append the id_transaksi to it
-            var formData = new FormData();
-            formData.append("id_transaksi", id_transaksi);
-
-            // Send an AJAX request to the server to handle the deletion
-            fetch("delete_data.php", {
-                method: "POST",
-                body: formData,
-            })
-            .then(response => response.text())
-            .then(data => {
-                // Handle the response from the server
-                alert(data); // You may want to update the UI or take other actions based on the server response
-                location.reload(); // Reload the page to reflect the changes
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-    }
-</script> -->
 </body>
 
 </html>
