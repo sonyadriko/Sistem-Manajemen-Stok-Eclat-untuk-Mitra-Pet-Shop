@@ -1,17 +1,19 @@
-<?php 
-    include 'connection.php'; 
-    session_start(); 
-    set_time_limit(300);
-    if (!isset($_SESSION['id_user'])) { 
-        header("Location: login.php"); 
-    }
+<?php
+include 'connection.php';
+session_start();
+set_time_limit(300);
+if (!isset($_SESSION['id_user'])) {
+    header('Location: login.php');
+}
 
 ?>
 <?php include 'layouts/head-main.php'; ?> <?php include 'layouts/config.php'; ?> <?php require 'vendor/autoload.php'; ?>
+
 <head>
     <title>Analisa</title>
     <?php include 'layouts/head.php'; ?>
-    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+        type="text/css" />
     <?php include 'layouts/head-style.php'; ?>
 </head>
 <?php include 'layouts/body.php'; ?>
@@ -31,7 +33,8 @@
                     <div class="row mb-4">
                         <label for="support" class="col-sm-3 col-form-label">Min Support %</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" id="support" name="support" placeholder="Enter Min Support">
+                            <input type="number" class="form-control" id="support" name="support"
+                                placeholder="Enter Min Support">
                         </div>
                     </div>
                     <!-- <div class="row mb-4">
@@ -515,14 +518,14 @@ function displayResult($result)
     echo '</br>';
     
 ?>
-<script>
-    var encodedAssociationRulesAtoB = <?php echo  json_encode($associationRulesAtoB); ?>;
-    var encodedAssociationRulesBtoA = <?php echo  json_encode($associationRulesBtoA); ?>;
-    var encodedAssosiasi3_1 = <?php echo  json_encode($assosiasi3_1); ?>;
-    var encodedAssosiasi3_2 = <?php echo  json_encode($assosiasi3_2); ?>;
-    var encodedAssosiasi3_3 = <?php echo  json_encode($assosiasi3_3); ?>;
-    </script>
-<?php }
+                <script>
+                    var encodedAssociationRulesAtoB = <?php echo json_encode($associationRulesAtoB); ?>;
+                    var encodedAssociationRulesBtoA = <?php echo json_encode($associationRulesBtoA); ?>;
+                    var encodedAssosiasi3_1 = <?php echo isset($assosiasi3_1) ? json_encode($assosiasi3_1) : 'null'; ?>;
+                    var encodedAssosiasi3_2 = <?php echo isset($assosiasi3_2) ? json_encode($assosiasi3_2) : 'null'; ?>;
+                    var encodedAssosiasi3_3 = <?php echo isset($assosiasi3_3) ? json_encode($assosiasi3_3) : 'null'; ?>;
+                </script>
+                <?php }
 
         function calculateEclat($minSupport, $minConfidence)
         {
@@ -611,7 +614,7 @@ function displayResult($result)
 
             
 ?>
-            </div> 
+            </div>
         </div>
         <?php include 'layouts/footer.php'; ?>
     </div>
@@ -628,19 +631,19 @@ function displayResult($result)
 <script src="assets/js/pages/dashboard.init.js"></script>
 <script src="assets/js/app.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var associationRulesAtoB = [];  
-        var associationRulesBtoA = [];  
-        var association3_1 = [];  
-        var association3_2 = [];  
-        var association3_3 = [];  
+    document.addEventListener("DOMContentLoaded", function() {
+        var associationRulesAtoB = [];
+        var associationRulesBtoA = [];
+        var association3_1 = [];
+        var association3_2 = [];
+        var association3_3 = [];
         const saveButton = document.getElementById('saveButton');
         console.log('Save Button:', saveButton);
         if (saveButton) {
             console.log('Button Disabled:', saveButton.disabled);
-        }   
+        }
         // Event listener for form submission
-        document.getElementById("eclatForm").addEventListener("submit", function (event) {
+        document.getElementById("eclatForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent the default form submission
             saveData(); // Call the saveData function when the form is submitted
         });
@@ -686,85 +689,102 @@ function displayResult($result)
             var association3_3 = encodedAssosiasi3_3 || [];
             document.getElementById('saveButton').disabled = true;
 
-            saveDetailHasil(parsedData.last_id, associationRulesAtoB, associationRulesBtoA, association3_1, association3_2, association3_3);
+            saveDetailHasil(parsedData.last_id, associationRulesAtoB, associationRulesBtoA, association3_1,
+                association3_2, association3_3);
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
-    function saveDetailHasil(idHasil, associationRulesAtoB, associationRulesBtoA, association3_1, association3_2, association3_3) {
+    function saveDetailHasil(idHasil, associationRulesAtoB, associationRulesBtoA, association3_1, association3_2,
+        association3_3) {
         var detailDataArray = [];
 
+        if (associationRulesAtoB.length > 0) {
         associationRulesAtoB.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
-                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                id_rule: rule.Rule,
                 support: rule.Support,
                 confidence: rule.Confidence,
             };
             detailDataArray.push(detailData);
         });
+    }
 
+         // Include data from associationRulesBtoA if it is not empty
+    if (associationRulesBtoA.length > 0) {
         associationRulesBtoA.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
-                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                id_rule: rule.Rule,
                 support: rule.Support,
                 confidence: rule.Confidence,
             };
             detailDataArray.push(detailData);
         });
+    }
+
+       if (association3_1.length > 0) {
         association3_1.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
-                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                id_rule: rule.Rule,
                 support: rule.Support,
                 confidence: rule.Confidence,
             };
             detailDataArray.push(detailData);
         });
+    }
+
+    if (association3_2.length > 0) {
         association3_2.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
-                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                id_rule: rule.Rule,
                 support: rule.Support,
                 confidence: rule.Confidence,
             };
             detailDataArray.push(detailData);
         });
+    }
+    if (association3_3.length > 0) {
         association3_3.forEach(rule => {
             var detailData = {
                 id_hasil: idHasil,
-                id_rule: rule.Rule,         // Use 'id_rule' instead of 'rule'
+                id_rule: rule.Rule,
                 support: rule.Support,
                 confidence: rule.Confidence,
             };
             detailDataArray.push(detailData);
         });
+    }
 
         console.log(detailDataArray);
 
         fetch('save_detail_hasil.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ detailDataArray }),
-        })
-        .then(response => response.json())  
-        .then(data => {
-            console.log('Data detail hasil successfully saved:', data);
-            // Add your logic or response handling here
-            setTimeout(function() {
-                document.getElementById('saveButton').disabled = true;
-            }, 100); // Adjust the delay as needed
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    detailDataArray
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data detail hasil successfully saved:', data);
+                // Add your logic or response handling here
+                setTimeout(function() {
+                    document.getElementById('saveButton').disabled = true;
+                }, 100); // Adjust the delay as needed
 
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
-
 </script>
 </body>
+
 </html>
