@@ -12,8 +12,12 @@ if (!isset($_SESSION['id_user'])) {
 <head>
     <title>Analisa</title>
     <?php include 'layouts/head.php'; ?>
-    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
-        type="text/css" />
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- DataTables -->
+    <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <?php include 'layouts/head-style.php'; ?>
 </head>
 <?php include 'layouts/body.php'; ?>
@@ -88,8 +92,8 @@ function displayResult($result)
     echo '</br>';
     echo '<h3>frequent 1-itemsets</h3>';
     echo '<div class="table-responsive">';
-    echo '<table class="table mb-0 table-bordered">';
-    echo '<tr><td>NO</td><td>Item</td><td>Tid List</td><td>Frequent pattern</td><td>Support</td></tr>';
+    echo '<table id="datatable" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>NO</td><td>Item</td><td>Tid List</td><td>Frequent pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     sort($uniqueBarang);
     foreach ($uniqueBarang as $kodeBarang) {
@@ -109,7 +113,14 @@ function displayResult($result)
         echo "<tr><td>$no</td><td>$kodeBarang</td><td>" . implode(', ', $tidList) . "</td><td>$frequentPattern</td><td>$support</td></tr>";
         $no++;
     }
-    echo '</table>';echo '</div>';echo '</br>';echo '</br>';echo '<h3>frequent 1-itemsets dg minsup</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>NO</td><td>Item</td><td>Tid List</td><td>Frequent pattern</td><td>Support</td></tr>';
+    echo '</tbody></table>';
+    echo '</div>';
+    echo '</br>';
+    echo '</br>';
+    echo '<h3>frequent 1-itemsets dg minsup</h3>';
+    echo '<div class="table-responsive">';
+    echo '<table id="datatable1" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>NO</td><td>Item</td><td>Tid List</td><td>Frequent pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     foreach ($uniqueBarang as $kodeBarang) {
         $tidList = array();
@@ -126,7 +137,9 @@ function displayResult($result)
             $no++;
         }
     }
-    echo '</table>';echo '</div>';echo '</br>';
+    echo '</tbody></table>';
+    echo '</div>';
+    echo '</br>';
     
     $minFrequentCount = 1; 
     // Ganti dengan nilai minimum frekuensi yang diinginkan
@@ -174,7 +187,11 @@ function displayResult($result)
         $transactions[$idTransaksi][] = $kodeBarang;
     }
 
-    echo '</br>';echo '<h3>frequent 2-itemsets</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
+    echo '</br>';
+    echo '<h3>frequent 2-itemsets</h3>';
+    echo '<div class="table-responsive">';
+    echo '<table id="datatable2" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     $frequent1Items = array();
     foreach ($uniqueBarang as $kodeBarang) {
@@ -210,9 +227,12 @@ function displayResult($result)
             $no++;
         }
     }
-    echo '</table>'; echo '</div>'; 
+    echo '</tbody></table>'; echo '</div>'; 
     echo '</br>'; echo '</br>';
-    echo '<h3>frequent 2-itemsets dengan minsup</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
+    echo '<h3>frequent 2-itemsets dengan minsup</h3>';
+    echo '<div class="table-responsive">';
+    echo '<table id="datatable3" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>No</td><td>Pasangan Barang</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     $allPairs = array();
     $uniqueBarangCount = count($uniqueBarang);
@@ -247,7 +267,7 @@ function displayResult($result)
             );
         }
     }
-    echo '</table>';echo '</div>';echo '</br>';
+    echo '</tbody></table>';echo '</div>';echo '</br>';
     $uniqueItems = array_unique(array_merge(array_column($frequent2ItemsetsData, 'barangA'), array_column($frequent2ItemsetsData, 'barangB')));
     function combinations($items, $k) {
         if ($k == 0) {
@@ -295,7 +315,11 @@ function displayResult($result)
     } else {
         echo 'Error executing query: ' . mysqli_error($link);
     }
-    echo '</br>';echo '<h3>frequent 3-itemsets</h3>';echo '<div class="table-responsive">';echo '<table class="table mb-0 table-bordered">';echo '<tr><td>No</td><td>Itemsets</td><td>Tid List</td><td>Frequent Pattern</td><td>Support</td></tr>';
+    echo '</br>';
+    echo '<h3>frequent 3-itemsets</h3>';
+    echo '<div class="table-responsive">';
+    echo '<table id="datatable4" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>No</td><td>Itemsets</td><td>Tid List</td><td>Frequent Pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     $allTripleCombinations = combinations(array_keys($groupedResults), 3);
     foreach ($allTripleCombinations as $tripleComb) {
@@ -322,10 +346,14 @@ function displayResult($result)
             echo "<tr><td>$no</td><td>$itemsets</td><td>($tidListStr)</td><td>$frequentPatternABC</td><td>$supportABC</td></tr>";
             $no++;
     }
-    echo '</table>';echo '</div>';echo '</br>';echo '</br>';
+    echo '</tbody></table>';
+    echo '</div>';
+    echo '</br>';
+    echo '</br>';
     echo '<h3>Frequent 3 Itemset dengan minisup</h3>';
-    echo '<table class="table mb-0 table-bordered">';
-    echo '<tr><td>No</td><td>Itemset</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr>';
+    echo '<div class="table-responsive">';
+    echo '<table id="datatable5" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>No</td><td>Itemset</td><td>Transaksi</td><td>Frequent Pattern</td><td>Support</td></tr></thead><tbody>';
     $no = 1;
     $allTriplets = array();
     $uniqueBarangCount = count($uniqueBarang);
@@ -359,7 +387,9 @@ function displayResult($result)
             $no++;
         }
     }
-    echo '</table>';echo '</br>';
+    echo '</tbody></table>';
+    echo '</div>';
+    echo '</br>';
     function calculateSupport($barangA, $barangB, $transaksiGrouped)
     {
         $countAB = 0;$countA = 0;
@@ -381,9 +411,15 @@ function displayResult($result)
         return $countAB;
     }
     echo '</br>';
-    echo '<h3>Aturan Asosiasi</h3>';echo '<div class="table-responsive">';echo '<table id="associationRules" class="table mb-0 table-bordered">'; echo '<thead><tr><td>No</td><td>Rule</td><td>Support</td><td>Confidence</td></tr></thead>';echo '<tbody>';
+    echo '<h3>Aturan Asosiasi</h3>';
+    echo '<div class="table-responsive">';
+    // echo '<table id="associationRules" class="table mb-0 table-bordered">'; 
+    echo '<table id="datatable6" class="table table-bordered dt-responsive nowrap w-100">'; 
+    echo '<thead><tr><td>No</td><td>Rule</td><td>Support</td><td>Confidence</td></tr></thead>';
+    echo '<tbody>';
     $no = 1;
-    $associationRulesAtoB = array();$associationRulesBtoA = array();
+    $associationRulesAtoB = array();
+    $associationRulesBtoA = array();
     foreach ($allPairs as $pair) {
         $barangA = $pair['barangA'];
         $barangB = $pair['barangB'];
@@ -418,7 +454,11 @@ function displayResult($result)
             );
        
             echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidenceAtoB</td></tr>";
-            echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA</td></tr>";
+            echo "<tr><td>$no</td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA</td></tr>";
+
+            //id asosiasirules
+            // echo "<tr><td>$no</td><td>Jika konsumen membeli $barangA maka membeli $barangB</td><td>$supportAB</td><td>$confidenceAtoB</td></tr>";
+            // echo "<tr><td></td><td>Jika konsumen membeli $barangB maka membeli $barangA</td><td>$supportAB</td><td>$confidenceBtoA</td></tr>";
             $no++;
         }
     }
@@ -441,8 +481,10 @@ function displayResult($result)
   
     echo '</br>';
     echo '<h3>Aturan Asosiasi 3-Itemset</h3>';
-    echo '<table class="table mb-0 table-bordered">';
-    echo '<tr><td>No</td><td>Association Rules</td><td>Support</td><td>Confidence</td></tr>';
+    echo '<div class="table-responsive">';
+    // echo '<table class="table mb-0 table-bordered">';
+    echo '<table id="datatable7" class="table table-bordered dt-responsive nowrap w-100">';
+    echo '<thead><tr><td>No</td><td>Association Rules</td><td>Support</td><td>Confidence</td></tr></thead><tbody>';
     
     $no = 1;
     
@@ -511,7 +553,8 @@ function displayResult($result)
         }
     }
     
-    echo '</table>';
+    echo '</tbody></table>';
+    echo '</div>';
     echo '</br>';
     echo '</br><button id="saveButton" class="btn btn-success" onclick="saveData()">Save</button>';
     echo '</br>';
@@ -620,9 +663,27 @@ function displayResult($result)
     </div>
 </div>
 <?php include 'layouts/vendor-scripts.php'; ?>
+
+<!-- Required datatable js -->
+<script src="assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<!-- Buttons examples -->
+<script src="assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="assets/libs/jszip/jszip.min.js"></script>
+<script src="assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Datatable init js -->
+<script src="assets/js/pages/datatables.init.js"></script>
+
 <script src="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
 <script src="assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
-<script src="assets/libs/jquery/jquery.min.js"></script>
+<!-- <script src="assets/libs/jquery/jquery.min.js"></script> -->
 <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/libs/metismenu/metisMenu.min.js"></script>
 <script src="assets/libs/simplebar/simplebar.min.js"></script>
@@ -630,8 +691,23 @@ function displayResult($result)
 <script src="assets/libs/feather-icons/feather.min.js"></script>
 <script src="assets/js/pages/dashboard.init.js"></script>
 <script src="assets/js/app.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable1').DataTable();
+            $('#datatable2').DataTable();
+            $('#datatable3').DataTable();
+            $('#datatable4').DataTable();
+            $('#datatable5').DataTable();
+            $('#datatable6').DataTable();
+            $('#datatable7').DataTable();
+        });
+    </script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+     
+
         var associationRulesAtoB = [];
         var associationRulesBtoA = [];
         var association3_1 = [];
@@ -701,64 +777,64 @@ function displayResult($result)
         var detailDataArray = [];
 
         if (associationRulesAtoB.length > 0) {
-        associationRulesAtoB.forEach(rule => {
-            var detailData = {
-                id_hasil: idHasil,
-                id_rule: rule.Rule,
-                support: rule.Support,
-                confidence: rule.Confidence,
-            };
-            detailDataArray.push(detailData);
-        });
-    }
+            associationRulesAtoB.forEach(rule => {
+                var detailData = {
+                    id_hasil: idHasil,
+                    id_rule: rule.Rule,
+                    support: rule.Support,
+                    confidence: rule.Confidence,
+                };
+                detailDataArray.push(detailData);
+            });
+        }
 
-         // Include data from associationRulesBtoA if it is not empty
-    if (associationRulesBtoA.length > 0) {
-        associationRulesBtoA.forEach(rule => {
-            var detailData = {
-                id_hasil: idHasil,
-                id_rule: rule.Rule,
-                support: rule.Support,
-                confidence: rule.Confidence,
-            };
-            detailDataArray.push(detailData);
-        });
-    }
+        // Include data from associationRulesBtoA if it is not empty
+        if (associationRulesBtoA.length > 0) {
+            associationRulesBtoA.forEach(rule => {
+                var detailData = {
+                    id_hasil: idHasil,
+                    id_rule: rule.Rule,
+                    support: rule.Support,
+                    confidence: rule.Confidence,
+                };
+                detailDataArray.push(detailData);
+            });
+        }
 
-       if (association3_1.length > 0) {
-        association3_1.forEach(rule => {
-            var detailData = {
-                id_hasil: idHasil,
-                id_rule: rule.Rule,
-                support: rule.Support,
-                confidence: rule.Confidence,
-            };
-            detailDataArray.push(detailData);
-        });
-    }
+        if (association3_1.length > 0) {
+            association3_1.forEach(rule => {
+                var detailData = {
+                    id_hasil: idHasil,
+                    id_rule: rule.Rule,
+                    support: rule.Support,
+                    confidence: rule.Confidence,
+                };
+                detailDataArray.push(detailData);
+            });
+        }
 
-    if (association3_2.length > 0) {
-        association3_2.forEach(rule => {
-            var detailData = {
-                id_hasil: idHasil,
-                id_rule: rule.Rule,
-                support: rule.Support,
-                confidence: rule.Confidence,
-            };
-            detailDataArray.push(detailData);
-        });
-    }
-    if (association3_3.length > 0) {
-        association3_3.forEach(rule => {
-            var detailData = {
-                id_hasil: idHasil,
-                id_rule: rule.Rule,
-                support: rule.Support,
-                confidence: rule.Confidence,
-            };
-            detailDataArray.push(detailData);
-        });
-    }
+        if (association3_2.length > 0) {
+            association3_2.forEach(rule => {
+                var detailData = {
+                    id_hasil: idHasil,
+                    id_rule: rule.Rule,
+                    support: rule.Support,
+                    confidence: rule.Confidence,
+                };
+                detailDataArray.push(detailData);
+            });
+        }
+        if (association3_3.length > 0) {
+            association3_3.forEach(rule => {
+                var detailData = {
+                    id_hasil: idHasil,
+                    id_rule: rule.Rule,
+                    support: rule.Support,
+                    confidence: rule.Confidence,
+                };
+                detailDataArray.push(detailData);
+            });
+        }
 
         console.log(detailDataArray);
 
