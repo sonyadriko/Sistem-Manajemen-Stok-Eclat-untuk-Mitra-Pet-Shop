@@ -1,4 +1,4 @@
-Background
+<strong>Background</strong>
 Stockouts are a common issue faced by many businesses, including pet shops. To address this problem, a system is needed that can predict stock requirements based on previous purchasing patterns. The Eclat algorithm is an effective data mining algorithm for finding associations or frequent patterns in transaction data. By using Eclat, we can identify combinations of products that are often purchased together and assist in inventory management.
 
 Key Features
