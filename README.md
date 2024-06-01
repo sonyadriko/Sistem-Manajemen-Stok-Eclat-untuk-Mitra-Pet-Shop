@@ -20,6 +20,9 @@ Stockouts are a common issue faced by many businesses, including pet shops. To a
   <li>database.sql: The SQL file to create and populate database tables.</li>
   <li>assets/: Folder containing CSS, JavaScript, and image files.</li>
 </ul>
-
+<h2>Contribution</h2>
+Contributions are welcome! Please open an issue for discussion or submit a pull request for improvements or new features.
+<h2>License</h2>
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 
