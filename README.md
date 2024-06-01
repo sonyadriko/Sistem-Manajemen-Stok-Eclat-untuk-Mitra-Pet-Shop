@@ -7,14 +7,12 @@ Stockouts are a common issue faced by many businesses, including pet shops. To a
 <li>Data Management: Stores and manages transaction and inventory data using MySQL.</li>
 <li>User Interface: A user-friendly web interface for entering transaction data and viewing analysis results.</li>
 </ul>
-<br>
 <h2>Technologies Used</h2>
 <ol>
   <li>PHP 8: Used for application logic and server-side management.</li>
   <li>MySQL: Used to store transaction data and analysis results.</li>
   <li>HTML/CSS/JavaScript: Used for developing the user interface.</li>
 </ol>
-<br>
 <h2>Project Structure</h2>
 <ul>
   <li>index.php: The main page of the application.</li>
